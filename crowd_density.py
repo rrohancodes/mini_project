@@ -392,13 +392,13 @@ def main():
 
     # [PHASE2] Summary metrics export
     if args.summary:
-        overall_med_speed = round(statistics.median(all_median_speeds), 2) if all_median_speeds else None
+        overall_med_speed = float(round(statistics.median(all_median_speeds), 2)) if all_median_speeds else None
         summary_data = {
-            "max_people": max_people_count,
-            "peak_density": round(max_peak_s, 2),
+            "max_people": int(max_people_count),
+            "peak_density": float(round(max_peak_s, 2)),
             "median_speed": overall_med_speed,
-            "risk_level": highest_risk_name,
-            "total_ids": len(seen_ids),
+            "risk_level": str(highest_risk_name),
+            "total_ids": int(len(seen_ids)),
         }
         with open(args.summary, "w") as sf:
             json.dump(summary_data, sf, indent=2)
