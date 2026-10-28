@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>Civic Surveillance &amp; Optical Telemetry Portal</title><link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "error-container": "#ffdad6", "on-surface-variant": "#3f4850", "surface-tint": "#006398", "on-secondary": "#ffffff", "on-background": "#181c20", "outline": "#707881", "on-error-container": "#93000a", "background": "#f7f9ff", "on-primary-fixed": "#001d31", "secondary-fixed-dim": "#bcc7de", "on-tertiary": "#ffffff", "on-tertiary-fixed-variant": "#43474b", "surface-container-lowest": "#ffffff", "on-secondary-fixed-variant": "#3c475a", "surface-bright": "#f7f9ff", "tertiary-fixed-dim": "#c3c7cb", "outline-variant": "#bfc7d2", "primary-fixed": "#cce5ff", "on-error": "#ffffff", "surface-container-high": "#e5e8ee", "primary-container": "#007bb9", "tertiary": "#585d60", "surface-container": "#ebeef3", "on-primary-container": "#fdfcff", "on-tertiary-fixed": "#171c1f", "inverse-surface": "#2d3135", "on-surface": "#181c20", "inverse-primary": "#93ccff", "surface-container-low": "#f1f4f9", "surface-dim": "#d7dadf", "surface-variant": "#e0e3e8", "surface": "#f7f9ff", "secondary": "#545f73", "primary": "#006194", "surface-container-highest": "#e0e3e8", "on-primary-fixed-variant": "#004b73", "inverse-on-surface": "#eef1f6", "primary-fixed-dim": "#93ccff", "error": "#ba1a1a", "secondary-container": "#d5e0f8", "on-tertiary-container": "#fbfcff", "secondary-fixed": "#d8e3fb", "on-secondary-fixed": "#111c2d", "tertiary-fixed": "#dfe3e7", "tertiary-container": "#707579", "on-primary": "#ffffff", "on-secondary-container": "#586377" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": {}, "fontFamily": { "headline": ["Public Sans"], "display": ["Public Sans"], "body": ["Public Sans"], "label": ["Public Sans"] }, "fontSize": {} } } };</script></head><body class="bg-surface font-body text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-inverse-surface text-inverse-on-surface shadow-[0_1px_8px_rgba(0,0,0,0.06)]"><div class="bg-on-background/40 border-b border-outline-variant/20 px-6 py-1 text-xs text-surface-container-high"><div class="max-w-[1200px] mx-auto flex items-center justify-between"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-surface-tint">policy</span><span class="font-label tracking-wide uppercase text-[11px]">Official Government System • Public Safety Optical Operations Division</span></div><div class="flex items-center gap-4 text-[11px] font-mono"><span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>SECURE NODE: OSN-EAST-04</span><span class="text-outline-variant">|</span><span>ENCRYPTION: FIPS 140-3</span></div></div></div><div class="h-20 max-w-[1200px] mx-auto px-6 flex items-center justify-between gap-6"><div class="flex items-center gap-4 shrink-0"><div class="w-10 h-10 bg-primary-container/30 border border-primary/40 flex items-center justify-center"><span class="material-symbols-outlined text-primary-fixed text-2xl">verified_user</span></div><div class="flex flex-col"><span class="text-xs font-label uppercase tracking-widest text-outline-variant">Municipal Command • Section 508</span><span class="font-headline text-base font-bold tracking-tight text-white">CIVIC SURVEILLANCE &amp; OPTICAL TELEMETRY</span></div></div><div class="flex items-center gap-5 shrink-0"><div class="flex flex-col items-end border-r border-outline-variant/30 pr-5"><span class="text-[11px] uppercase tracking-wider font-label text-outline-variant">Operator Clearance</span><span class="inline-flex items-center px-2 py-0.5 mt-0.5 text-xs font-semibold bg-surface-container-low text-on-surface border border-outline-variant">LEVEL IV - UNRESTRICTED</span></div><div class="flex flex-col items-end border-r border-outline-variant/30 pr-5 font-mono"><span class="text-[11px] uppercase tracking-wider font-label text-outline-variant">System Time (UTC)</span><span class="text-xs text-surface-bright font-semibold tracking-wide">14:28:02 Z • ACTIVE</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="bg-inverse-surface/95 border-t border-outline-variant/20 px-6"><div class="max-w-[1200px] mx-auto"><nav class="flex items-center gap-1 overflow-x-auto py-1" data-active-classes="bg-primary text-on-primary font-bold shadow-sm"><a class="px-3.5 py-2 text-xs font-semibold uppercase tracking-wider text-surface-container-high hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center gap-1.5 shrink-0" data-path="cctv-telemetry-feed-analysis" href="#">CCTV Telemetry &amp; Feed Analysis</a><a class="px-3.5 py-2 text-xs font-semibold uppercase tracking-wider text-surface-container-high hover:bg-surface-container-high hover:text-on-surface transition-colors flex items-center gap-2 shrink-0" data-path="topology-concourse-mesh" href="#">Topology &amp; Concourse Mesh<span class="text-[10px] px-1.5 py-0.2 bg-secondary-container text-on-secondary-container font-mono normal-case tracking-normal border border-outline-variant/40">Planned</span></a><a class="px-3.5 py-2 text-xs font-semibold uppercase tracking-wider text-surface-container-high hover:bg-surface-container-high hover:text-on-surface transition-colors shrink-0" data-path="early-warning-compression-alerts" href="#">Early Warning Compression Alerts</a><a class="px-3.5 py-2 text-xs font-semibold uppercase tracking-wider text-surface-container-high hover:bg-surface-container-high hover:text-on-surface transition-colors shrink-0" data-path="investigations-records" href="#">Investigations &amp; Records</a><a class="px-3.5 py-2 text-xs font-semibold uppercase tracking-wider text-surface-container-high hover:bg-surface-container-high hover:text-on-surface transition-colors shrink-0" data-path="system-compliance-audit" href="#">System Compliance &amp; Audit</a></nav></div></div></header><main class="w-full pt-36 bg-surface min-h-[calc(100vh-14rem)]"><div class="flex flex-col w-full">
+<!-- Official Section Utility / Breadcrumb Sub-Header -->
+<div class="w-full bg-surface-container-low border-b border-outline-variant/40 px-6 py-3">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-xs">
+<div class="flex items-center gap-2 text-on-surface-variant font-mono">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-surface-container-lowest border border-outline-variant font-semibold text-primary">
+<span class="w-2 h-2 rounded-none bg-emerald-600"></span>
+          SYS.DIAG: ONLINE
+        </span>
+<span class="text-outline-variant">/</span>
+<span>OPS-DIVISION: MUNICIPAL TRANSIT &amp; CIVIC PLAZAS</span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface font-semibold">FEED-ANALYSIS-PORTAL-v4</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant font-mono text-[11px]">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-primary">dns</span>
+          HOST: <code>EDGE-SRV-NORTH-04</code>
+</span>
+<span class="text-outline-variant">|</span>
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-emerald-700">lock</span>
+          PRIVACY ENCLAVE: ACTIVE
+        </span>
+</div>
+</div>
+</div>
+<!-- Main Operational Canvas -->
+<div class="w-full px-6 py-6 max-w-[1200px] mx-auto space-y-6">
+<!-- Console Header & Live Telemetry Metadata Bar -->
+<div class="bg-surface-container-lowest border border-outline-variant p-6 shadow-sm">
+<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 pb-5 border-b border-outline-variant/40">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase bg-inverse-surface text-inverse-on-surface">OPERATIONAL CONSOLE</span>
+<span class="px-2 py-0.5 text-[10px] font-bold tracking-widest uppercase bg-primary-fixed text-on-primary-fixed border border-primary/20">EDITION 2025.1</span>
+</div>
+<h1 class="text-2xl font-bold font-headline text-on-surface tracking-tight">Optical Telemetry &amp; Edge CCTV Analysis Console</h1>
+<p class="text-sm text-on-surface-variant max-w-3xl leading-relaxed">
+            Autonomous crowd flow monitoring, localized density calculation, and fall anomaly detection for public transit hubs and civic plazas under Statutory Surveillance Standard §14.2.
+          </p>
+</div>
+<div class="flex items-center gap-2 shrink-0 self-start">
+<button class="px-3.5 py-2 text-xs font-semibold bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant flex items-center gap-1.5 transition-colors focus:outline focus:outline-2 focus:outline-primary" id="systemRefreshBtn" type="button">
+<span class="material-symbols-outlined text-sm">sync</span>
+            Flush Pipeline
+          </button>
+<button class="px-3.5 py-2 text-xs font-semibold bg-inverse-surface hover:bg-black text-white flex items-center gap-1.5 transition-colors focus:outline focus:outline-2 focus:outline-primary" id="viewReferenceBtn" type="button">
+<span class="material-symbols-outlined text-sm">description</span>
+            Audit Directive
+          </button>
+</div>
+</div>
+<!-- Live Metadata Grid Bar -->
+<div class="pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+<div class="border-l-2 border-primary pl-3 bg-surface-container-low/50 py-1.5">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider block font-sans font-semibold">Terminal Ingestion Node</span>
+<span class="text-on-surface font-bold text-xs mt-0.5 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-primary"></span>
+            NODE-04 / NORTH PLAZA CONCOURSE
+          </span>
+</div>
+<div class="border-l-2 border-emerald-600 pl-3 bg-surface-container-low/50 py-1.5">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider block font-sans font-semibold">Inference Model Engine</span>
+<span class="text-emerald-800 font-bold text-xs mt-0.5 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-emerald-600"></span>
+            YOLOv8 Edge Engine v1.0.4 Online
+          </span>
+</div>
+<div class="border-l-2 border-secondary pl-3 bg-surface-container-low/50 py-1.5">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider block font-sans font-semibold">Optical Feed Input</span>
+<span class="text-on-surface font-semibold text-xs mt-0.5 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 bg-secondary"></span>
+            Awaiting Frame Ingestion (Ready)
+          </span>
+</div>
+<div class="border-l-2 border-outline pl-3 bg-surface-container-low/50 py-1.5">
+<span class="text-[10px] text-on-surface-variant uppercase tracking-wider block font-sans font-semibold">Throughput &amp; Latency</span>
+<span class="text-on-surface font-semibold text-xs mt-0.5">
+            1080p @ 30 FPS / &lt;24ms inference
+          </span>
+</div>
+</div>
+</div>
+<!-- Primary Operational Grid (65% / 35%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- LEFT COLUMN: 65% width (8 Cols) - Monitor & Metrics -->
+<div class="lg:col-span-8 space-y-6">
+<!-- Video Feed Container / Dark Monitor Frame -->
+<div class="bg-surface-container-lowest border border-outline-variant overflow-hidden shadow-sm">
+<!-- Monitor Header Bar -->
+<div class="bg-inverse-surface text-inverse-on-surface px-4 py-2.5 flex items-center justify-between border-b border-outline-variant/30 text-xs">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-none bg-error animate-pulse"></span>
+<span class="font-bold tracking-wider font-mono text-[11px] uppercase text-white">OPTICAL MONITOR FEED // PRIMARY CANV-01</span>
+<span class="text-outline-variant font-mono text-[10px]">[EDGE INGESTION ACTIVE]</span>
+</div>
+<div class="flex items-center gap-3 font-mono text-[11px]">
+<span class="text-surface-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-outline-variant">grid_view</span>
+                ASPECT 16:9
+              </span>
+<span class="text-outline-variant">|</span>
+<span class="text-surface-bright flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-emerald-400">sensors</span>
+                FPS: 00.0
+              </span>
+</div>
+</div>
+<!-- Video Monitor Screen (Dark Room CRT / Institutional Look) -->
+<div class="relative w-full aspect-video bg-[#0b1320] flex flex-col items-center justify-center p-6 select-none overflow-hidden group" id="monitorContainer">
+<!-- Gridlines and reticle overlay -->
+<div class="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+<!-- Corner Reticles for camera framing -->
+<div class="absolute top-4 left-4 w-5 h-5 border-t-2 border-l-2 border-outline-variant pointer-events-none"></div>
+<div class="absolute top-4 right-4 w-5 h-5 border-t-2 border-r-2 border-outline-variant pointer-events-none"></div>
+<div class="absolute bottom-4 left-4 w-5 h-5 border-b-2 border-l-2 border-outline-variant pointer-events-none"></div>
+<div class="absolute bottom-4 right-4 w-5 h-5 border-b-2 border-r-2 border-outline-variant pointer-events-none"></div>
+<!-- Optical Center Reticle Cross -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none opacity-30 flex items-center justify-center">
+<span class="w-full h-[1px] bg-white absolute"></span>
+<span class="h-full w-[1px] bg-white absolute"></span>
+</div>
+<!-- Inactive Stream State Overlay -->
+<div class="relative z-10 flex flex-col items-center text-center max-w-md px-4" id="noStreamState">
+<div class="w-16 h-16 bg-surface-container/10 border border-outline-variant/40 flex items-center justify-center text-white mb-4">
+<span class="material-symbols-outlined text-3xl text-outline-variant">videocam_off</span>
+</div>
+<h2 class="text-base font-bold font-headline text-white tracking-wide">No active video stream loaded</h2>
+<p class="text-xs text-outline-variant mt-1.5 leading-relaxed">
+                Upload an uncompressed CCTV recording (.mp4, .mov, .avi • max 100MB) or register an edge RTSP stream to begin optical spatial analysis.
+              </p>
+<!-- Quick Diagnostic Badge -->
+<div class="mt-4 px-3 py-1 bg-black/50 border border-outline-variant/30 text-[10px] font-mono text-outline-variant flex items-center gap-2">
+<span>PIPELINE BUFFER: 0 BYTES ALLOCATED</span>
+<span>•</span>
+<span>STATUS: IDLE</span>
+</div>
+</div>
+<!-- Live Loaded Mock Stream (Hidden initially) -->
+<div class="absolute inset-0 hidden z-10" id="activeStreamState">
+<img alt="Operational CCTV Feed Telemetry Console Reference View" class="w-full h-full object-cover object-center filter contrast-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkZr1IbCWoMGtthotCzIEQwzB3psJpyJNAdEjosTZDGKxs1gKYYNSDHxAImrlY2bHsGClN7vRVnwWukKcJJmK9PpYCdCmdQEFSfVDDyVV01JF2k06IXGAaesmAc83ea-Dezow7bytyiBj5jDCnx2vahNF-cpPf74nK9_VVuh6yYZ-TPnPYs26vDuNDZJRVdUfiwWpUJuXO3o0O2yws_ULZr3ONh1tvVmYW57JCqiBE7ZfhvR9FXNtw"/>
+<div class="absolute top-3 left-3 bg-black/80 text-white font-mono text-[10px] px-2 py-1 border border-outline-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<span>TEST FEED: SIMULATED_STATION_CONCOURSE_PEAK.MP4</span>
+<span class="text-outline-variant">|</span>
+<span class="text-primary-fixed">REC 00:03:42</span>
+</div>
+</div>
+<!-- Bottom Video Player Controls Bar (Simulated) -->
+<div class="absolute bottom-0 left-0 right-0 h-10 bg-black/85 backdrop-blur-sm border-t border-outline-variant/30 px-4 flex items-center justify-between text-xs text-outline-variant z-20">
+<div class="flex items-center gap-3">
+<button class="hover:text-white transition-colors flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-base">play_arrow</span>
+</button>
+<button class="hover:text-white transition-colors flex items-center justify-center" type="button">
+<span class="material-symbols-outlined text-base">stop</span>
+</button>
+<div class="h-3 w-[1px] bg-outline-variant/40"></div>
+<span class="font-mono text-[10px] text-surface-bright">00:00:00 / --:--:--</span>
+</div>
+<div class="flex items-center gap-3 font-mono text-[11px]">
+<button class="hover:text-white transition-colors" title="Toggle Privacy Bounding Boxes" type="button">
+<span class="material-symbols-outlined text-sm">visibility</span>
+</button>
+<button class="hover:text-white transition-colors" title="Snapshot Frame" type="button">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+</button>
+<button class="hover:text-white transition-colors" title="Toggle Fullscreen" type="button">
+<span class="material-symbols-outlined text-sm">fullscreen</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Video File Ingestion Controls & Demonstration Trigger -->
+<div class="p-4 bg-surface-container-low border-t border-outline-variant/40">
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<label class="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-container text-on-primary font-label text-xs font-bold tracking-wider uppercase transition-colors border border-primary" for="cctvFileInput">
+<span class="material-symbols-outlined text-sm">file_upload</span>
+                  Select Video File
+                </label>
+<input accept=".mp4,.mov,.avi" class="sr-only" id="cctvFileInput" type="file"/>
+<button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label text-xs font-semibold tracking-wide border border-outline-variant transition-colors" id="loadSampleFeedBtn" type="button">
+<span class="material-symbols-outlined text-sm text-primary">play_circle</span>
+                  Load Demonstration Test Sample Feed
+                </button>
+</div>
+<div class="flex items-center gap-2 text-xs text-on-surface-variant font-mono">
+<span class="material-symbols-outlined text-base text-secondary">info</span>
+<span>Max Payload: 100MB (Local processing)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Telemetry Metric Ribbon (3 Key Metric Panels from Target Interface) -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<!-- Tile 1: Headcount & Localized Packing -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between shadow-sm">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant font-label block">Estimated Headcount</span>
+<span class="text-[10px] text-tertiary font-mono block">OCCUPANCY IN BOUNDING BOX</span>
+</div>
+<span class="material-symbols-outlined text-primary text-xl">groups</span>
+</div>
+<div class="my-4">
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold font-headline text-on-surface tracking-tight" id="metricHeadcount">0</span>
+<span class="text-xs font-mono text-tertiary">PERSONS</span>
+</div>
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant mt-1 font-mono">
+<span>Density: <strong class="text-on-surface" id="metricDensity">0.0 persons / m²</strong></span>
+<span class="text-emerald-700 font-semibold font-sans">NORMAL</span>
+</div>
+</div>
+<!-- Threshold scale indicator -->
+<div class="space-y-1">
+<div class="w-full h-1.5 bg-surface-container-high flex">
+<div class="h-full bg-primary" id="densityBar" style="width: 4%;"></div>
+</div>
+<div class="flex justify-between text-[9px] font-mono text-outline">
+<span>0.0 (CLEAR)</span>
+<span>2.0 (MODERATE)</span>
+<span>&gt;4.0 (CRITICAL)</span>
+</div>
+</div>
+</div>
+<!-- Tile 2: Velocity & Vector Displacement -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between shadow-sm">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant font-label block">Crowd Velocity</span>
+<span class="text-[10px] text-tertiary font-mono block">VECTOR DISPLACEMENT RATE</span>
+</div>
+<span class="material-symbols-outlined text-secondary text-xl">speed</span>
+</div>
+<div class="my-4">
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold font-headline text-on-surface tracking-tight" id="metricVelocity">0.0</span>
+<span class="text-xs font-mono text-tertiary">M / SEC</span>
+</div>
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant mt-1">
+<span class="font-mono">Motion: <strong class="text-on-surface font-semibold">Stationary / Normal</strong></span>
+<span class="px-1.5 py-0.2 bg-surface-container text-on-surface-variant text-[10px] font-mono">LAMBDA: 1.0</span>
+</div>
+</div>
+<!-- Vector status indicator -->
+<div class="space-y-1">
+<div class="w-full h-1.5 bg-surface-container-high flex">
+<div class="h-full bg-secondary" style="width: 8%;"></div>
+</div>
+<div class="flex justify-between text-[9px] font-mono text-outline">
+<span>0.0 m/s</span>
+<span>1.2 m/s (NOMINAL FLOW)</span>
+<span>&gt;2.5 m/s</span>
+</div>
+</div>
+</div>
+<!-- Tile 3: Compression Risk & Fall Anomaly -->
+<div class="bg-surface-container-lowest border border-outline-variant p-4 flex flex-col justify-between shadow-sm">
+<div class="flex items-start justify-between">
+<div>
+<span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant font-label block">Compression Risk</span>
+<span class="text-[10px] text-tertiary font-mono block">BIOMECHANICAL RISK INDEX</span>
+</div>
+<span class="material-symbols-outlined text-emerald-700 text-xl">security</span>
+</div>
+<div class="my-4">
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-extrabold font-headline text-emerald-800 tracking-tight" id="metricRisk">LOW</span>
+<span class="text-xs font-mono text-emerald-700">INDEX: 0.04</span>
+</div>
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant mt-1 font-mono">
+<span>Fallen / Motionless: <strong class="text-on-surface" id="metricFalls">0 detected</strong></span>
+<span class="text-emerald-700 font-semibold font-sans">SAFE</span>
+</div>
+</div>
+<!-- Indicator Bar -->
+<div class="space-y-1">
+<div class="w-full h-1.5 bg-surface-container-high flex">
+<div class="h-full bg-emerald-600" style="width: 10%;"></div>
+</div>
+<div class="flex justify-between text-[9px] font-mono text-outline">
+<span>LOW (&lt;0.3)</span>
+<span>ELEVATED</span>
+<span>HIGH (&gt;0.75)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Evidentiary Verification Statement Banner -->
+<div class="p-4 bg-surface-container-low border-l-4 border-primary text-xs flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">verified</span>
+<div class="space-y-1">
+<span class="font-bold text-on-surface block uppercase tracking-wide text-[11px]">Chain of Custody &amp; Privacy Assurance Notice</span>
+<p class="text-on-surface-variant leading-relaxed">
+              Optical processing is executed in volatile on-sensor RAM via edge inference runtime. Raw facial coordinates and biometric templates are permanently scrubbed prior to feature tensor computation pursuant to Civil Liberties Protection Regulation §28.
+            </p>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: 35% width (4 Cols) - Alert & Diagnostics Pane -->
+<div class="lg:col-span-4 space-y-6">
+<!-- Panel 1: Real-Time Event & Anomaly Queue -->
+<div class="bg-surface-container-lowest border border-outline-variant shadow-sm">
+<div class="p-4 bg-surface-container-low border-b border-outline-variant/40 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-primary">notifications_active</span>
+<h2 class="font-headline font-bold text-xs uppercase tracking-wider text-on-surface">Real-Time Event &amp; Anomaly Queue</h2>
+</div>
+<span class="px-2 py-0.5 text-[10px] font-bold font-mono bg-surface-container-lowest text-on-surface border border-outline-variant" id="eventQueueCount">
+              0 EVENTS
+            </span>
+</div>
+<div class="p-4 space-y-4">
+<!-- Active Anomaly Status Box -->
+<div class="p-3 bg-surface-container border border-outline-variant/60 flex items-start gap-3" id="alertStatusBox">
+<div class="w-6 h-6 rounded-none bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div class="space-y-1">
+<span class="text-xs font-bold text-emerald-900 block leading-tight">No anomalous crowd compression or falls detected.</span>
+<span class="text-[11px] text-tertiary block font-mono">NOMINAL SENSOR SWEEP • T-00:00:12</span>
+</div>
+</div>
+<!-- Monitoring Protocol Explanation -->
+<div class="p-3 bg-surface-container-low/60 text-xs text-on-surface-variant space-y-2 border-l-2 border-outline-variant">
+<span class="font-semibold text-on-surface text-[11px] uppercase tracking-wide block">Active Inference Logic</span>
+<p class="text-[11px] leading-relaxed">
+                The edge pipeline continuously evaluates spatial density fields for high localized packing (&gt;4.0 p/m²), sudden turbulent counter-flows, and ground-level motionless skeletal keypoints.
+              </p>
+</div>
+<!-- Event Log Feed / Empty state -->
+<div class="border border-outline-variant/30">
+<div class="bg-surface-container-high px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider font-semibold text-on-surface flex justify-between">
+<span>Recent Event Log</span>
+<span>STATUS: IDLE</span>
+</div>
+<div class="p-3 text-center py-6 text-on-surface-variant text-xs space-y-1" id="eventLogContainer">
+<span class="material-symbols-outlined text-2xl text-outline-variant block mx-auto">playlist_add_check</span>
+<p class="font-medium text-xs text-on-surface">Queue is clear</p>
+<p class="text-[11px] text-tertiary">Incident markers will appear here automatically when triggered.</p>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<button class="text-xs text-primary hover:underline font-semibold flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-sm">history</span>
+                Retrieve Historical Incident Log
+              </button>
+<button class="text-[11px] text-tertiary hover:text-on-surface underline font-mono" id="simulateIncidentBtn" type="button">
+                Simulate Anomaly
+              </button>
+</div>
+</div>
+</div>
+<!-- Panel 2: Edge Inference Directives & Model Status -->
+<div class="bg-surface-container-lowest border border-outline-variant shadow-sm">
+<div class="p-4 bg-surface-container-low border-b border-outline-variant/40 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base text-secondary">memory</span>
+<h2 class="font-headline font-bold text-xs uppercase tracking-wider text-on-surface">Edge Inference Directives &amp; Model Status</h2>
+</div>
+<span class="w-2 h-2 bg-emerald-600"></span>
+</div>
+<div class="p-4 space-y-4">
+<!-- Specification Table -->
+<div class="text-xs divide-y divide-outline-variant/30 font-mono">
+<div class="py-2 flex items-center justify-between">
+<span class="text-on-surface-variant font-sans text-[11px]">Detection Engine</span>
+<span class="font-bold text-on-surface flex items-center gap-1">
+                  YOLOv8n Crowd
+                  <span class="text-emerald-700 text-[10px] px-1 bg-emerald-50 border border-emerald-300">Ready</span>
+</span>
+</div>
+<div class="py-2 flex items-center justify-between">
+<span class="text-on-surface-variant font-sans text-[11px]">Pose &amp; Fall Classifier</span>
+<span class="font-semibold text-on-surface">YOLOv8-Pose Anomaly</span>
+</div>
+<div class="py-2 flex items-center justify-between">
+<span class="text-on-surface-variant font-sans text-[11px]">Temporal Buffer</span>
+<span class="font-semibold text-on-surface">15-minute sliding window</span>
+</div>
+<div class="py-2 flex items-center justify-between">
+<span class="text-on-surface-variant font-sans text-[11px]">Inference Latency</span>
+<span class="font-bold text-emerald-800">≤ 24ms (TensorRT FP16)</span>
+</div>
+<div class="py-2 flex items-center justify-between">
+<span class="text-on-surface-variant font-sans text-[11px]">Anonymization Protocol</span>
+<span class="text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-700">lock_outline</span>
+                  PII Scrubbing: Active
+                </span>
+</div>
+<div class="py-2 flex items-center justify-between">
+<span class="text-on-surface-variant font-sans text-[11px]">Confidence Minimum</span>
+<span class="font-semibold text-on-surface">≥ 0.65 Tensor Score</span>
+</div>
+</div>
+<!-- Settings / Directive Trigger Modal Action -->
+<button class="w-full py-2.5 px-3 bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors focus:outline focus:outline-2 focus:outline-primary" id="openConfigModalBtn" type="button">
+<span class="material-symbols-outlined text-sm">tune</span>
+              Adjust Inference Sensitivity &amp; Thresholds
+            </button>
+</div>
+</div>
+<!-- Panel 3: Operational Quick Reference Card -->
+<div class="bg-surface-container-low border border-outline-variant/60 p-4 space-y-2">
+<div class="flex items-center gap-2 text-xs font-bold text-on-surface uppercase tracking-wider font-label">
+<span class="material-symbols-outlined text-sm text-primary">policy</span>
+            Standard Operating Rule
+          </div>
+<p class="text-xs text-on-surface-variant leading-relaxed">
+            In the event of an automated <strong>CRITICAL COMPRESSION ALERT (&gt;4.5 p/m²)</strong>, the operator is obligated under Procedure 44-A to verify concourse camera angles 04-A through 04-D before initiating manual concourse hold barriers.
+          </p>
+<div class="pt-2">
+<a class="text-primary hover:underline text-xs font-semibold flex items-center gap-1 font-mono" href="#">
+<span>VIEW FULL PROTOCOL SOP-CROWD-99</span>
+<span class="material-symbols-outlined text-[13px]">north_east</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Institutional Roadmap Ribbon: Upcoming Modules & Phases -->
+<div class="bg-surface-container-lowest border border-outline-variant p-6 shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-outline-variant/40">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary font-mono block">PHASED CAPABILITY EXPANSION</span>
+<h2 class="text-sm font-bold font-headline text-on-surface uppercase tracking-wider">Subordinate Civic Surveillance Modules in Development</h2>
+</div>
+<span class="text-xs font-mono text-tertiary">MUNICIPAL SAFETY MASTER PLAN • FISCAL YEAR 2025</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+<!-- Module Card 1 -->
+<div class="p-4 bg-surface-container-low border border-outline-variant/50 relative overflow-hidden flex flex-col justify-between">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-secondary-container text-on-secondary-container border border-outline-variant/40 uppercase">Phase 2 Planned</span>
+<span class="material-symbols-outlined text-secondary text-base">hub</span>
+</div>
+<h3 class="text-xs font-bold text-on-surface font-headline">Module 02: GIS Concourse &amp; Multi-Camera Topology Mesh</h3>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+              Spatial cross-correlation linking 14 distinct platform camera angles into a unified persistent 3D vector volume to prevent blind spots in exit tunnels.
+            </p>
+</div>
+<div class="pt-4 mt-2 border-t border-outline-variant/30 flex items-center justify-between text-[10px] font-mono text-tertiary">
+<span>SPEC: RFC-8812</span>
+<span class="text-on-surface font-semibold">Q3 AUDIT DEPLOYMENT</span>
+</div>
+</div>
+<!-- Module Card 2 -->
+<div class="p-4 bg-surface-container-low border border-outline-variant/50 relative overflow-hidden flex flex-col justify-between">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-secondary-container text-on-secondary-container border border-outline-variant/40 uppercase">Phase 2 Planned</span>
+<span class="material-symbols-outlined text-secondary text-base">emergency</span>
+</div>
+<h3 class="text-xs font-bold text-on-surface font-headline">Module 03: Automated 112 CAD Emergency Dispatch Trigger</h3>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+              Direct telemetry handshake dispatching optical alarm payloads, estimated passenger count, and choke-point coordinate matrices directly to emergency services.
+            </p>
+</div>
+<div class="pt-4 mt-2 border-t border-outline-variant/30 flex items-center justify-between text-[10px] font-mono text-tertiary">
+<span>INTEGRATION: NENA i3</span>
+<span class="text-on-surface font-semibold">PILOT TESTING</span>
+</div>
+</div>
+<!-- Module Card 3 -->
+<div class="p-4 bg-surface-container-low border border-outline-variant/50 relative overflow-hidden flex flex-col justify-between">
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-secondary-container text-on-secondary-container border border-outline-variant/40 uppercase">Phase 3 Planned</span>
+<span class="material-symbols-outlined text-secondary text-base">person_search</span>
+</div>
+<h3 class="text-xs font-bold text-on-surface font-headline">Module 04: Missing Person Re-Identification &amp; Search</h3>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">
+              Attribute-based temporal search (clothing color vectors, baggage classification) with zero facial retention under strict judicial warrant protocols.
+            </p>
+</div>
+<div class="pt-4 mt-2 border-t border-outline-variant/30 flex items-center justify-between text-[10px] font-mono text-tertiary">
+<span>GOVERNANCE: ACT §44-B</span>
+<span class="text-on-surface font-semibold">LEGAL REVIEW</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Modal: Inference Sensitivity & Threshold Configuration (Institutional Dialog) -->
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4" id="configModal">
+<div class="bg-surface-container-lowest border-2 border-inverse-surface max-w-xl w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+<!-- Modal Header -->
+<div class="bg-inverse-surface text-inverse-on-surface px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-lg">tune</span>
+<span class="font-headline font-bold text-sm uppercase tracking-wide text-white">Edge Sensor Directives &amp; Sensitivity Tuning</span>
+</div>
+<button class="text-surface-container-high hover:text-white transition-colors" id="closeConfigModalBtn" type="button">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="p-6 space-y-5 text-xs">
+<div class="p-3 bg-surface-container-low border-l-4 border-primary text-on-surface-variant">
+<span class="font-bold text-on-surface block text-xs">Administrative Threshold Modification</span>
+<span>Alterations take effect immediately on local Edge Tensor Engine runtime <code>EDGE-SRV-NORTH-04</code>.</span>
+</div>
+<!-- Slider 1: Localized Density Trigger -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="font-bold text-on-surface uppercase tracking-wide text-[11px]" for="densityThresholdSlider">Crowd Density Alert Trigger (p/m²)</label>
+<span class="font-mono font-bold text-primary bg-primary-fixed/40 px-2 py-0.5 border border-primary/20" id="densitySliderVal">4.0 persons / m²</span>
+</div>
+<input class="w-full accent-primary h-2 bg-surface-container-high rounded-none cursor-pointer" id="densityThresholdSlider" max="6.0" min="1.0" step="0.1" type="range" value="4.0"/>
+<div class="flex justify-between text-[10px] font-mono text-tertiary">
+<span>1.0 (Sparse)</span>
+<span>3.5 (Normal Commuter Transit)</span>
+<span>6.0 (Severe Crush)</span>
+</div>
+</div>
+<!-- Slider 2: Fall Detection Duration Threshold -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="font-bold text-on-surface uppercase tracking-wide text-[11px]" for="fallTimeSlider">Motionless Fall Inactivity Window</label>
+<span class="font-mono font-bold text-primary bg-primary-fixed/40 px-2 py-0.5 border border-primary/20" id="fallTimeVal">2.5 seconds</span>
+</div>
+<input class="w-full accent-primary h-2 bg-surface-container-high rounded-none cursor-pointer" id="fallTimeSlider" max="10.0" min="0.5" step="0.5" type="range" value="2.5"/>
+<div class="flex justify-between text-[10px] font-mono text-tertiary">
+<span>0.5s (Sensitive)</span>
+<span>2.5s (Standard Fall Confirmation)</span>
+<span>10.0s (Static Loitering)</span>
+</div>
+</div>
+<!-- Checkbox Options -->
+<div class="space-y-3 pt-2 border-t border-outline-variant/30">
+<label class="flex items-start gap-3 cursor-pointer">
+<input checked="" class="mt-0.5 w-4 h-4 rounded-none accent-primary" type="checkbox"/>
+<span class="text-on-surface leading-tight">
+<strong>Enforce Hardware Privacy Mask:</strong> Ensure face and torso identity bounding pixels are cleared before buffer retention.
+            </span>
+</label>
+<label class="flex items-start gap-3 cursor-pointer">
+<input checked="" class="mt-0.5 w-4 h-4 rounded-none accent-primary" type="checkbox"/>
+<span class="text-on-surface leading-tight">
+<strong>Emit Sub-second Telemetry to Regional Ops:</strong> Stream JSON vectors over secure TLS FIPS-140 tunnel.
+            </span>
+</label>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant flex items-center justify-between">
+<button class="px-4 py-2 text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors border border-outline-variant" id="cancelModalBtn" type="button">
+          Cancel / Retain Defaults
+        </button>
+<button class="px-5 py-2 text-xs font-bold bg-primary hover:bg-primary-container text-on-primary uppercase tracking-wider transition-colors border border-primary" id="saveModalBtn" type="button">
+          Commit Tensor Directives
+        </button>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript logic for prototype demo -->
+<script>
+    (function initConsoleTelemetry() {
+      const loadSampleFeedBtn = document.getElementById('loadSampleFeedBtn');
+      const cctvFileInput = document.getElementById('cctvFileInput');
+      const noStreamState = document.getElementById('noStreamState');
+      const activeStreamState = document.getElementById('activeStreamState');
+      const systemRefreshBtn = document.getElementById('systemRefreshBtn');
+      const simulateIncidentBtn = document.getElementById('simulateIncidentBtn');
+
+      const metricHeadcount = document.getElementById('metricHeadcount');
+      const metricDensity = document.getElementById('metricDensity');
+      const metricVelocity = document.getElementById('metricVelocity');
+      const metricRisk = document.getElementById('metricRisk');
+      const metricFalls = document.getElementById('metricFalls');
+      const densityBar = document.getElementById('densityBar');
+
+      const eventQueueCount = document.getElementById('eventQueueCount');
+      const alertStatusBox = document.getElementById('alertStatusBox');
+      const eventLogContainer = document.getElementById('eventLogContainer');
+
+      const configModal = document.getElementById('configModal');
+      const openConfigModalBtn = document.getElementById('openConfigModalBtn');
+      const closeConfigModalBtn = document.getElementById('closeConfigModalBtn');
+      const cancelModalBtn = document.getElementById('cancelModalBtn');
+      const saveModalBtn = document.getElementById('saveModalBtn');
+
+      const densityThresholdSlider = document.getElementById('densityThresholdSlider');
+      const densitySliderVal = document.getElementById('densitySliderVal');
+      const fallTimeSlider = document.getElementById('fallTimeSlider');
+      const fallTimeVal = document.getElementById('fallTimeVal');
+
+      // Load Sample Video Feed State
+      function activateDemoStream() {
+        if (!noStreamState || !activeStreamState) return;
+        noStreamState.classList.add('hidden');
+        activeStreamState.classList.remove('hidden');
+
+        // Animate metrics to match high-fidelity active analysis
+        let currentCount = 0;
+        const targetCount = 38;
+        const countInterval = setInterval(() => {
+          if (currentCount < targetCount) {
+            currentCount += 2;
+            metricHeadcount.textContent = currentCount;
+          } else {
+            metricHeadcount.textContent = targetCount;
+            clearInterval(countInterval);
+          }
+        }, 30);
+
+        metricDensity.textContent = '1.8 persons / m²';
+        metricVelocity.textContent = '1.1';
+        metricRisk.textContent = 'NOMINAL';
+        metricRisk.className = 'text-4xl font-extrabold font-headline text-emerald-800 tracking-tight';
+        metricFalls.textContent = '0 detected';
+        if (densityBar) densityBar.style.width = '38%';
+      }
+
+      if (loadSampleFeedBtn) {
+        loadSampleFeedBtn.addEventListener('click', activateDemoStream);
+      }
+
+      if (cctvFileInput) {
+        cctvFileInput.addEventListener('change', function(e) {
+          if (e.target.files && e.target.files[0]) {
+            activateDemoStream();
+          }
+        });
+      }
+
+      // Flush pipeline action
+      if (systemRefreshBtn) {
+        systemRefreshBtn.addEventListener('click', function() {
+          if (noStreamState && activeStreamState) {
+            noStreamState.classList.remove('hidden');
+            activeStreamState.classList.add('hidden');
+          }
+          metricHeadcount.textContent = '0';
+          metricDensity.textContent = '0.0 persons / m²';
+          metricVelocity.textContent = '0.0';
+          metricRisk.textContent = 'LOW';
+          metricRisk.className = 'text-4xl font-extrabold font-headline text-emerald-800 tracking-tight';
+          metricFalls.textContent = '0 detected';
+          if (densityBar) densityBar.style.width = '4%';
+
+          // Reset alerts
+          eventQueueCount.textContent = '0 EVENTS';
+          eventQueueCount.className = 'px-2 py-0.5 text-[10px] font-bold font-mono bg-surface-container-lowest text-on-surface border border-outline-variant';
+          alertStatusBox.className = 'p-3 bg-surface-container border border-outline-variant/60 flex items-start gap-3';
+          alertStatusBox.innerHTML = `
+            <div class="w-6 h-6 rounded-none bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">check</span>
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs font-bold text-emerald-900 block leading-tight">No anomalous crowd compression or falls detected.</span>
+              <span class="text-[11px] text-tertiary block font-mono">NOMINAL SENSOR SWEEP &bull; T-00:00:00</span>
+            </div>
+          `;
+          eventLogContainer.innerHTML = `
+            <span class="material-symbols-outlined text-2xl text-outline-variant block mx-auto">playlist_add_check</span>
+            <p class="font-medium text-xs text-on-surface">Queue is clear</p>
+            <p class="text-[11px] text-tertiary">Incident markers will appear here automatically when triggered.</p>
+          `;
+        });
+      }
+
+      // Anomaly Simulation Trigger
+      if (simulateIncidentBtn) {
+        simulateIncidentBtn.addEventListener('click', function() {
+          activateDemoStream();
+          metricHeadcount.textContent = '84';
+          metricDensity.textContent = '4.6 persons / m² (CRITICAL)';
+          metricVelocity.textContent = '2.4';
+          metricRisk.textContent = 'ELEVATED';
+          metricRisk.className = 'text-4xl font-extrabold font-headline text-error tracking-tight';
+          metricFalls.textContent = '1 MOTIONLESS KEYPOINT';
+          if (densityBar) densityBar.style.width = '88%';
+
+          eventQueueCount.textContent = '1 EVENT ACTIVE';
+          eventQueueCount.className = 'px-2 py-0.5 text-[10px] font-bold font-mono bg-error text-white border border-error';
+
+          alertStatusBox.className = 'p-3 bg-error-container/40 border-l-4 border-error flex items-start gap-3';
+          alertStatusBox.innerHTML = `
+            <div class="w-6 h-6 rounded-none bg-error text-white flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-sm">warning</span>
+            </div>
+            <div class="space-y-1">
+              <span class="text-xs font-bold text-error block leading-tight">ALERT: Localized Compression &gt;4.0 p/m² &amp; Ground Keypoint Detected</span>
+              <span class="text-[11px] text-on-surface-variant block font-mono">SUB-ZONE: PLATFORM 4 ESCALATOR BOTTLENECK</span>
+            </div>
+          `;
+
+          eventLogContainer.innerHTML = `
+            <div class="text-left space-y-2 text-xs">
+              <div class="p-2 bg-error-container/20 border border-error/40 flex items-start justify-between">
+                <div>
+                  <span class="font-bold text-error font-mono block text-[11px]">INCIDENT #084-CMP</span>
+                  <span class="text-on-surface text-[11px]">Localized Crush Vector [p=4.6/m²]</span>
+                </div>
+                <span class="font-mono text-[10px] text-on-surface-variant">14:28:11Z</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      // Modal Triggers
+      function openModal() {
+        if (configModal) {
+          configModal.classList.remove('hidden');
+          configModal.classList.add('flex');
+        }
+      }
+      function closeModal() {
+        if (configModal) {
+          configModal.classList.add('hidden');
+          configModal.classList.remove('flex');
+        }
+      }
+
+      if (openConfigModalBtn) openConfigModalBtn.addEventListener('click', openModal);
+      if (closeConfigModalBtn) closeConfigModalBtn.addEventListener('click', closeModal);
+      if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
+      if (saveModalBtn) saveModalBtn.addEventListener('click', closeModal);
+
+      // Slider binding
+      if (densityThresholdSlider && densitySliderVal) {
+        densityThresholdSlider.addEventListener('input', function(e) {
+          densitySliderVal.textContent = parseFloat(e.target.value).toFixed(1) + ' persons / m²';
+        });
+      }
+      if (fallTimeSlider && fallTimeVal) {
+        fallTimeSlider.addEventListener('input', function(e) {
+          fallTimeVal.textContent = parseFloat(e.target.value).toFixed(1) + ' seconds';
+        });
+      }
+    })();
+  </script>
+</div></main><footer class="w-full bg-inverse-surface text-inverse-on-surface border-t-2 border-primary mt-16"><div class="max-w-[1200px] mx-auto px-6 py-12"><div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-outline-variant/30 text-xs"><div class="md:col-span-2 space-y-3"><div class="flex items-center gap-2 text-white font-headline font-bold text-sm tracking-wide"><span class="material-symbols-outlined text-primary-fixed text-base">shield</span>CIVIC PUBLIC SAFETY TELEMETRY &amp; OPTICAL OVERSIGHT</div><p class="text-outline-variant leading-relaxed">An official civic operations terminal for municipal optical feeds, telemetry ingestion, incident tracking, and evidentiary preservation under statutory privacy governance frameworks (Act 29 CFR Part 1910 and Freedom of Information Ordinance §44-B).</p><p class="text-[11px] text-outline-variant/80 font-mono">System Release 4.8.1-GA • Server Cluster: GEO-OPS-ALPHA-01 • Verification SHA256: 8f9b...a12c</p></div><div class="space-y-2"><span class="text-white font-label font-semibold uppercase tracking-wider text-[11px] block">Statutory Frameworks</span><ul class="space-y-1.5 text-outline-variant"><li><a class="hover:text-white transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[14px]">arrow_forward</span>Digital Evidence Custody Protocol</a></li><li><a class="hover:text-white transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[14px]">arrow_forward</span>Retention &amp; Expungement Schedules</a></li><li><a class="hover:text-white transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[14px]">arrow_forward</span>Section 508 Accessibility Statement</a></li><li><a class="hover:text-white transition-colors flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[14px]">arrow_forward</span>Civil Liberties Compliance Office</a></li></ul></div><div class="space-y-2"><span class="text-white font-label font-semibold uppercase tracking-wider text-[11px] block">Emergency &amp; Support Dispatch</span><div class="text-outline-variant space-y-1"><p class="font-mono text-white">DESK: +1 (800) 555-0199</p><p class="font-mono text-white">SECURE VOIP: 9910-OPS</p><p class="text-[11px] text-outline-variant/80 mt-2">To register optical anomalies or request formal court disclosure manifests, contact the Legal Records Registrar.</p></div></div></div><div class="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-outline-variant"><div class="flex items-center gap-4"><span>© Official Civic Department of Public Safety. All operational records restricted.</span><a class="hover:text-white underline underline-offset-2" href="#">Accessibility Standards</a><a class="hover:text-white underline underline-offset-2" href="#">Privacy Notice</a><a class="hover:text-white underline underline-offset-2" href="#">Audit Logs</a></div><div class="flex items-center gap-2 font-mono text-[10px] text-surface-container-high bg-on-background/50 px-3 py-1 border border-outline-variant/30"><span>AUTHORIZED PERSONNEL ONLY</span><span>•</span><span>UNAUTHORIZED ACCESS PROSECUTED UNDER 18 U.S.C. § 1030</span></div></div></div></footer></body></html>

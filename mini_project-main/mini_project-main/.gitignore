@@ -1,0 +1,31 @@
+# Python Bytecode and Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.env
+venv/
+.venv/
+env/
+
+# Operational Pipeline Runtime Artifacts
+uploads/
+outputs/
+data/
+*.mp4
+!test.mp4
+alerts.csv
+capacity_alerts.csv
+*_prog.json
+*_summary.json
+
+# Model Weights and Engines (Heavy binaries)
+*.pt
+*.onnx
+*.engine
+
+# IDE & OS Artifacts
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
