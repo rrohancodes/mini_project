@@ -3,11 +3,14 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Neural Topology Mapping • Crowd Surge & Compression Mitigation</title>
+  <title>Crowd Surge & Compression Telemetry • Mocha Light</title>
+  
+  <!-- Inter & JetBrains Mono for warm, human-crafted editorial clarity -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -15,23 +18,26 @@
       theme: {
         extend: {
           colors: {
-            primary: "#006194",
-            "primary-container": "#007bb9",
-            "primary-light": "#e0f2fe",
-            surface: "#f8fafc",
-            "surface-card": "#ffffff",
-            "surface-subtle": "#f1f5f9",
-            "surface-border": "#cbd5e1",
-            darkness: "#0f172a",
-            error: "#dc2626",
-            "error-light": "#fee2e2",
-            warning: "#d97706",
-            "warning-light": "#fef3c7",
-            success: "#16a34a",
-            "success-light": "#dcfce7",
+            // Light Beach Sand & Cream Palette
+            mocha: {
+              cream: "#faf5eb",      // Main background (very light beach sand cream)
+              subtle: "#f2ece0",     // Surface subtle / beach sand hover
+              card: "#ffffff",       // Clean crisp white card
+              border: "#e5dacf",     // Warm beach sand border
+              borderDark: "#d2c3b2", // Accent border
+              text: "#2c2420",       // Deep roasted coffee bean text
+              subtext: "#6d5e53",    // Warm muted drift text
+              muted: "#9c8c7f",      // Meta / placeholder text
+              header: "#211a17",     // Rich dark roast header
+              headerMuted: "#a8998e",
+              accent: "#8c5338",     // Warm terracotta / beach clay
+              accentHover: "#73422a",
+              accentLight: "#f8eee6",
+              accentBorder: "#e8cfbf",
+            }
           },
           fontFamily: {
-            sans: ["'Public Sans'", "sans-serif"],
+            sans: ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
             mono: ["'JetBrains Mono'", "monospace"],
           }
         }
@@ -39,146 +45,161 @@
     };
   </script>
   <style>
-    body { font-family: 'Public Sans', sans-serif; background-color: #f8fafc; color: #0f172a; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #f1f5f9; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #faf5eb;
+      color: #2c2420;
+      -webkit-font-smoothing: antialiased;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f2ece0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d2c3b2;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b6a38f;
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen flex flex-col justify-between bg-mocha-cream text-mocha-text selection:bg-[#edd5c8] selection:text-[#5c3422]">
 
-  <!-- TOP PROJECT HEADER -->
-  <header class="bg-darkness text-white border-b-4 border-primary shadow-md sticky top-0 z-40">
-    <div class="max-w-[1280px] mx-auto px-6 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+  <!-- TOP HEADER (Rich Dark Espresso Roast, Solid, Elegant) -->
+  <header class="bg-mocha-header text-white border-b-2 border-mocha-accent sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      
       <!-- Project Branding -->
-      <div class="flex items-center gap-3.5">
-        <div class="w-10 h-10 rounded bg-primary/30 border border-primary/50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-primary-light text-2xl">grid_view</span>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-md bg-[#382c27] border border-[#52413a] flex items-center justify-center shrink-0">
+          <span class="material-symbols-outlined text-[#e2a88e] text-xl">camera_outdoor</span>
         </div>
         <div>
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-mono tracking-widest uppercase bg-primary text-white px-1.5 py-0.5 rounded font-bold">Phase 2 Edge System</span>
-            <span class="text-xs text-slate-400 font-mono">College Mini Project</span>
+            <h1 class="text-sm font-bold tracking-tight text-white">
+              Neural Topology Mapping
+            </h1>
+            <span class="text-[10px] font-mono font-medium text-[#e2a88e] bg-[#382c27] px-2 py-0.5 rounded border border-[#52413a]">
+              Phase 2 Edge
+            </span>
           </div>
-          <h1 class="text-base sm:text-lg font-bold tracking-tight text-white leading-tight">
-            Neural Topology Mapping for Early-Stage Crowd Surge & Compression Mitigation
-          </h1>
+          <p class="text-xs text-mocha-headerMuted">Early-Stage Crowd Surge & Compression Mitigation</p>
         </div>
       </div>
 
-      <!-- Live Runtime Indicators -->
-      <div class="flex items-center gap-3 text-xs font-mono shrink-0">
-        <div class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-slate-300">Device:</span>
-          <span class="font-bold text-white truncate max-w-[160px]" id="metaDeviceText">Probing hardware...</span>
+      <!-- Live Hardware Status Badges -->
+      <div class="flex items-center gap-2.5 text-xs font-mono">
+        <div class="bg-[#2e2420] px-3 py-1.5 rounded border border-[#453731] flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span class="text-[#a8998e] text-[11px]">DEVICE:</span>
+          <span class="font-semibold text-white truncate max-w-[150px]" id="metaDeviceText">Probing hardware...</span>
         </div>
-        <div class="bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded hidden sm:flex items-center gap-2">
-          <span class="text-slate-300">Model:</span>
-          <span class="font-bold text-emerald-400" id="metaModelText">YOLOv8</span>
+        <div class="bg-[#2e2420] px-3 py-1.5 rounded border border-[#453731] hidden md:flex items-center gap-2">
+          <span class="text-[#a8998e] text-[11px]">MODEL:</span>
+          <span class="font-semibold text-[#e2a88e]" id="metaModelText">YOLOv8</span>
         </div>
       </div>
+
     </div>
   </header>
 
   <!-- MAIN OPERATIONAL WORKSPACE -->
-  <main class="max-w-[1280px] w-full mx-auto px-4 sm:px-6 py-6 space-y-6 flex-1">
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6 flex-1">
 
-    <!-- ACTION CONTROLS BAR -->
-    <div class="bg-surface-card border border-surface-border rounded-lg p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- Upload Video File -->
-        <label for="cctvFileInput" class="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-container text-white text-xs font-bold uppercase tracking-wider rounded transition-colors shadow-sm">
+    <!-- ACTION CONTROLS TOOLBAR -->
+    <div class="bg-mocha-card border border-mocha-border rounded-lg p-3.5 sm:p-4 shadow-[0_1px_4px_rgba(45,35,30,0.03)] flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Upload File Button -->
+        <label for="cctvFileInput" class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 bg-mocha-accent hover:bg-mocha-accentHover text-white text-xs font-semibold rounded-md transition-colors shadow-sm">
           <span class="material-symbols-outlined text-base">upload_file</span>
           Upload Video File
         </label>
         <input type="file" id="cctvFileInput" accept=".mp4,.mov,.avi" class="sr-only"/>
 
-        <!-- Load Demonstration Sample Feed -->
-        <button type="button" id="loadSampleFeedBtn" onclick="window.loadSampleFeed && window.loadSampleFeed()" class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold tracking-wide border border-slate-300 rounded transition-colors shadow-sm">
-          <span class="material-symbols-outlined text-base text-primary">play_circle</span>
-          Load Demonstration Sample Feed
+        <!-- Load Demonstration Feed -->
+        <button type="button" id="loadSampleFeedBtn" onclick="window.loadSampleFeed && window.loadSampleFeed()" class="inline-flex items-center gap-2 px-3.5 py-2 bg-white hover:bg-mocha-subtle text-mocha-text text-xs font-semibold border border-mocha-border rounded-md transition-colors shadow-sm">
+          <span class="material-symbols-outlined text-base text-mocha-accent">play_circle</span>
+          Load Demonstration Feed (test.mp4)
         </button>
 
-        <!-- Flush / Reset Pipeline -->
-        <button type="button" id="systemRefreshBtn" onclick="window.flushPipeline && window.flushPipeline()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors" title="Reset video and telemetry metrics">
-          <span class="material-symbols-outlined text-sm">refresh</span>
-          Reset Pipeline
+        <!-- Reset Button -->
+        <button type="button" id="systemRefreshBtn" onclick="window.flushPipeline && window.flushPipeline()" class="inline-flex items-center gap-1.5 px-3 py-2 bg-mocha-subtle hover:bg-mocha-border text-mocha-subtext text-xs font-medium rounded-md border border-mocha-border transition-colors" title="Reset monitor and telemetry">
+          <span class="material-symbols-outlined text-sm">restart_alt</span>
+          Reset
         </button>
 
-        <!-- Sensitivity Settings -->
-        <button type="button" id="openConfigModalBtn" class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded border border-slate-300 transition-colors">
+        <!-- Threshold Settings -->
+        <button type="button" id="openConfigModalBtn" class="inline-flex items-center gap-1.5 px-3 py-2 bg-mocha-subtle hover:bg-mocha-border text-mocha-subtext text-xs font-medium rounded-md border border-mocha-border transition-colors">
           <span class="material-symbols-outlined text-sm">tune</span>
-          Threshold Settings
+          Settings
         </button>
       </div>
 
-      <!-- Current Input Status -->
-      <div class="flex items-center gap-2 text-xs font-mono text-slate-600">
-        <span class="material-symbols-outlined text-sm text-primary">info</span>
-        <span>Active Feed: <strong id="metaInputText" class="text-slate-900 font-bold">Awaiting Video Input</strong></span>
+      <!-- Active Input Status -->
+      <div class="flex items-center gap-2 text-xs text-mocha-subtext font-mono">
+        <span class="w-1.5 h-1.5 rounded-full bg-mocha-accent"></span>
+        <span>Active Feed: <strong id="metaInputText" class="text-mocha-text font-medium font-sans">Awaiting Video Input</strong></span>
       </div>
     </div>
 
-    <!-- PRIMARY DUAL-COLUMN GRID -->
+    <!-- PRIMARY 2-COLUMN GRID -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-      <!-- LEFT COLUMN (8 Cols): Monitor & Key Metric Cards -->
+      <!-- LEFT COLUMN: Monitor & Key Metrics (8 Cols) -->
       <div class="lg:col-span-8 space-y-6">
 
-        <!-- MONITOR FRAME -->
-        <div class="bg-darkness border-2 border-slate-800 rounded-lg overflow-hidden shadow-lg">
+        <!-- CCTV MONITOR CARD -->
+        <div class="bg-mocha-card border border-mocha-border rounded-lg overflow-hidden shadow-[0_2px_8px_rgba(45,35,30,0.04)]">
+          
           <!-- Monitor Header -->
-          <div class="bg-slate-900 px-4 py-2.5 flex items-center justify-between border-b border-slate-800 text-xs font-mono text-slate-300">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="font-bold text-white tracking-wider uppercase">CCTV OPTICAL MONITOR</span>
+          <div class="bg-mocha-header px-4 py-2.5 flex items-center justify-between border-b border-[#382c27] text-xs font-mono text-mocha-headerMuted">
+            <div class="flex items-center gap-2 font-medium">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="text-slate-100 font-sans text-xs font-semibold">CCTV Optical Analysis Monitor</span>
             </div>
-            <div class="flex items-center gap-3 text-[11px]">
-              <span>ASPECT 16:9</span>
-              <span class="text-slate-600">|</span>
-              <span id="monitorFpsText" class="text-emerald-400 font-bold">FPS: 0.0</span>
+            <div class="flex items-center gap-3 text-[11px] text-[#a8998e]">
+              <span>Aspect 16:9</span>
+              <span class="text-[#453731]">|</span>
+              <span id="monitorFpsText" class="text-emerald-400 font-semibold font-mono">FPS: 0.0</span>
             </div>
           </div>
 
-          <!-- Screen Canvas Container -->
-          <div id="monitorContainer" class="relative w-full aspect-video bg-[#0b1320] flex items-center justify-center select-none overflow-hidden group">
-            <!-- Gridlines overlay -->
-            <div class="absolute inset-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-
-            <!-- Corner Framing Reticles -->
-            <div class="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-slate-500 pointer-events-none"></div>
-            <div class="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-slate-500 pointer-events-none"></div>
-            <div class="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-slate-500 pointer-events-none"></div>
-            <div class="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-slate-500 pointer-events-none"></div>
-
-            <!-- Inactive Standby State -->
-            <div id="noStreamState" class="relative z-10 flex flex-col items-center text-center max-w-sm px-4">
-              <div class="w-14 h-14 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-400 mb-3">
-                <span class="material-symbols-outlined text-3xl">videocam_off</span>
+          <!-- Video Display Canvas -->
+          <div id="monitorContainer" class="relative w-full aspect-video bg-[#140e0b] flex items-center justify-center select-none overflow-hidden">
+            
+            <!-- Idle / Standby State -->
+            <div id="noStreamState" class="relative z-10 flex flex-col items-center text-center max-w-sm px-6">
+              <div class="w-12 h-12 rounded-full bg-[#241c18] border border-[#382c27] flex items-center justify-center text-[#8a7a70] mb-3">
+                <span class="material-symbols-outlined text-2xl">videocam_off</span>
               </div>
-              <h2 class="text-sm font-bold text-white tracking-wide">No Active Video Stream</h2>
-              <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-                Click <strong>"Load Demonstration Sample Feed"</strong> to run test.mp4, or upload any CCTV .mp4 file.
+              <h2 class="text-sm font-semibold text-slate-200">No Video Stream Active</h2>
+              <p class="text-xs text-[#a8998e] mt-1 leading-relaxed">
+                Click <strong>"Load Demonstration Feed"</strong> to run test.mp4, or upload any surveillance CCTV file to evaluate crowd density.
               </p>
             </div>
 
-            <!-- Dynamic In-Monitor Progress Panel -->
-            <div id="processingPanel" class="relative z-30 flex flex-col items-center text-center max-w-md w-full px-6 py-6 bg-slate-900/95 border border-slate-700 rounded-lg shadow-2xl hidden">
-              <div class="w-full flex items-center justify-between pb-3 border-b border-slate-800 text-xs font-mono">
-                <span class="font-bold text-white flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
-                  <span id="procStageBadge" class="uppercase">STAGE: PROCESSING</span>
+            <!-- In-Monitor Progress Panel -->
+            <div id="processingPanel" class="relative z-30 flex flex-col items-center text-center max-w-md w-full px-6 py-6 bg-[#211a17]/98 border border-[#3e312b] rounded-lg shadow-2xl hidden">
+              <div class="w-full flex items-center justify-between pb-3 border-b border-[#382c27] text-xs font-mono">
+                <span class="font-semibold text-white flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-[#d97746] animate-pulse"></span>
+                  <span id="procStageBadge" class="uppercase text-[#d5c8b8]">STAGE: PROCESSING</span>
                 </span>
-                <span id="procPercent" class="font-bold text-primary-light text-sm">0%</span>
+                <span id="procPercent" class="font-bold text-[#e2a88e] font-mono text-sm">0%</span>
               </div>
-              <div class="w-full my-4 space-y-2">
-                <div class="w-full h-3 bg-slate-800 rounded overflow-hidden border border-slate-700">
-                  <div id="procProgressBar" class="h-full bg-primary transition-all duration-200" style="width: 0%"></div>
+              <div class="w-full my-4 space-y-2.5">
+                <div class="w-full h-2 bg-[#312520] rounded-full overflow-hidden">
+                  <div id="procProgressBar" class="h-full bg-mocha-accent transition-all duration-200" style="width: 0%"></div>
                 </div>
-                <p id="procMessage" class="text-xs text-slate-300 font-mono text-left truncate">Analyzing crowd movement...</p>
-                <div class="flex justify-between text-[11px] font-mono text-slate-400 pt-1 border-t border-slate-800/60">
+                <p id="procMessage" class="text-xs text-[#d5c8b8] font-mono text-left truncate">Processing video stream...</p>
+                <div class="flex justify-between text-[11px] font-mono text-[#a8998e] pt-1.5 border-t border-[#312520]">
                   <span id="procFrameText">FRAME: 0 / 0</span>
                   <span id="procEtaText">ETA: --</span>
                   <span id="procFpsText">FPS: --</span>
@@ -186,142 +207,147 @@
               </div>
             </div>
 
-            <!-- Dynamic Error Panel -->
-            <div id="errorPanel" class="relative z-30 flex flex-col items-center text-center max-w-md w-full px-6 py-6 bg-slate-900 border-2 border-error rounded-lg shadow-2xl hidden">
-              <div class="w-12 h-12 rounded-full bg-error/20 border border-error/40 text-error flex items-center justify-center mb-3">
-                <span class="material-symbols-outlined text-2xl">error</span>
+            <!-- In-Monitor Error Panel -->
+            <div id="errorPanel" class="relative z-30 flex flex-col items-center text-center max-w-md w-full px-6 py-6 bg-[#211a17] border border-rose-500/50 rounded-lg shadow-2xl hidden">
+              <div class="w-10 h-10 rounded-full bg-rose-500/10 text-rose-400 flex items-center justify-center mb-2.5">
+                <span class="material-symbols-outlined text-xl">error_outline</span>
               </div>
-              <h3 id="errorTitle" class="text-sm font-bold text-error uppercase font-mono tracking-wide">Inference Pipeline Failure</h3>
-              <p id="errorMessage" class="text-xs text-slate-300 mt-2 mb-4 font-mono leading-relaxed max-h-36 overflow-y-auto w-full px-2">An error occurred.</p>
-              <button id="errorRetryBtn" type="button" class="px-4 py-2 bg-error hover:bg-red-700 text-white font-mono text-xs font-bold uppercase rounded transition-colors">
+              <h3 id="errorTitle" class="text-sm font-semibold text-rose-400 tracking-wide font-sans">Pipeline Failure</h3>
+              <p id="errorMessage" class="text-xs text-[#d5c8b8] mt-1.5 mb-4 font-mono leading-relaxed max-h-36 overflow-y-auto w-full px-2">An error occurred during execution.</p>
+              <button id="errorRetryBtn" type="button" class="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium text-xs rounded transition-colors">
                 Dismiss & Retry
               </button>
             </div>
 
-            <!-- Active Video Player State -->
+            <!-- Live Video State -->
             <div id="activeStreamState" class="absolute inset-0 hidden z-10">
               <video id="resultVideo" controls playsinline class="w-full h-full object-contain bg-black"></video>
-              <div id="videoOverlayBadge" class="absolute top-3 left-3 bg-slate-900/90 text-white font-mono text-[10px] px-2.5 py-1 rounded border border-slate-700 flex items-center gap-2 pointer-events-none z-10">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span id="activeStreamLabel">TOPOLOGY HEATMAP FEED</span>
-                <span id="cachedResultTag" class="hidden text-amber-300 font-bold bg-amber-950/90 px-1.5 py-0.2 rounded border border-amber-600/60">CACHED RESULT (SHA-256)</span>
+              <div id="videoOverlayBadge" class="absolute top-3 left-3 bg-[#211a17]/90 text-white font-mono text-[11px] px-2.5 py-1 rounded border border-[#3e312b] flex items-center gap-2 pointer-events-none z-10">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span id="activeStreamLabel" class="font-sans font-medium text-xs">Annotated Topology Feed</span>
+                <span id="cachedResultTag" class="hidden text-[#fed7aa] font-bold bg-[#432b1e] px-1.5 py-0.5 rounded text-[10px] border border-[#784323]">CACHED RESULT</span>
               </div>
             </div>
+
           </div>
 
           <!-- Download Action Ribbon -->
-          <div id="downloadActionPanel" class="p-3 bg-slate-900 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs hidden">
+          <div id="downloadActionPanel" class="p-3 bg-mocha-subtle border-t border-mocha-border flex flex-wrap items-center justify-between gap-3 text-xs hidden">
             <div class="flex flex-wrap items-center gap-2">
-              <a id="downloadVideoBtn" href="#" download class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded font-mono font-semibold transition-colors border border-slate-700">
-                <span class="material-symbols-outlined text-sm text-primary-light">download</span>
-                Download Annotated Video (H.264)
+              <a id="downloadVideoBtn" href="#" download class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#faf6f1] text-mocha-text rounded border border-mocha-border font-medium transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-sm text-mocha-accent">download</span>
+                Download Video (H.264)
               </a>
-              <a id="downloadCsvBtn" href="#" download class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded font-mono font-semibold transition-colors border border-slate-700">
-                <span class="material-symbols-outlined text-sm text-amber-400">table_chart</span>
+              <a id="downloadCsvBtn" href="#" download class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#faf6f1] text-mocha-text rounded border border-mocha-border font-medium transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-sm text-mocha-subtext">table_chart</span>
                 Download Alerts CSV
               </a>
             </div>
-            <div id="cachedIndicatorBanner" class="hidden items-center gap-1.5 text-amber-300 bg-amber-950/60 px-2.5 py-1 rounded border border-amber-800 font-mono text-[11px]">
-              <span class="material-symbols-outlined text-xs text-amber-400">bolt</span>
-              <span>Loaded Instantly from SHA-256 Telemetry Cache</span>
+            <div id="cachedIndicatorBanner" class="hidden items-center gap-1.5 text-[#854d0e] bg-[#fefce8] px-2.5 py-1 rounded border border-[#fef08a] font-mono text-[11px]">
+              <span class="material-symbols-outlined text-xs text-[#ca8a04]">bolt</span>
+              <span>Instant SHA-256 Telemetry Cache Hit</span>
             </div>
           </div>
+
         </div>
 
-        <!-- 3 LIVE TELEMETRY CARDS -->
+        <!-- 3 LIVE TELEMETRY METRIC CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
           <!-- Card 1: Estimated Headcount -->
-          <div class="bg-surface-card border border-surface-border rounded-lg p-4 shadow-sm flex flex-col justify-between">
+          <div class="bg-mocha-card border border-mocha-border rounded-lg p-4 shadow-[0_1px_4px_rgba(45,35,30,0.03)] flex flex-col justify-between">
             <div class="flex items-start justify-between">
               <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Peak Headcount</span>
-                <span class="text-[10px] text-slate-400 font-mono">YOLOv8 PERSON DETECTIONS</span>
+                <span class="text-xs font-semibold text-mocha-subtext uppercase tracking-wider block">Peak Headcount</span>
+                <span class="text-[11px] text-mocha-muted">YOLOv8 Detection</span>
               </div>
-              <span class="material-symbols-outlined text-primary text-2xl">groups</span>
+              <div class="w-8 h-8 rounded-md bg-mocha-accentLight text-mocha-accent flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg">groups</span>
+              </div>
             </div>
             <div class="my-3">
               <div class="flex items-baseline gap-2">
-                <span id="metricHeadcount" class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono">0</span>
-                <span class="text-xs font-mono text-slate-500">PERSONS</span>
+                <span id="metricHeadcount" class="text-3xl sm:text-4xl font-bold tracking-tight text-mocha-text font-mono tabular-nums">0</span>
+                <span class="text-xs text-mocha-subtext font-medium">persons</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-slate-600 mt-1 font-mono">
-                <span>Density: <strong id="metricDensity" class="text-slate-900">0.0 (sat=4.0)</strong></span>
-                <span id="metricDensityStatus" class="font-bold text-success">NORMAL</span>
+              <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1 font-mono">
+                <span>Density: <strong id="metricDensity" class="text-mocha-text">0.0 (sat=4.0)</strong></span>
+                <span id="metricDensityStatus" class="font-semibold text-emerald-700 font-sans">Normal</span>
               </div>
             </div>
-            <!-- Progress scale -->
             <div class="space-y-1">
-              <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <div id="densityBar" class="h-full bg-primary transition-all duration-300" style="width: 4%;"></div>
+              <div class="w-full h-1.5 bg-mocha-subtle rounded-full overflow-hidden">
+                <div id="densityBar" class="h-full bg-mocha-accent transition-all duration-300" style="width: 4%;"></div>
               </div>
-              <div class="flex justify-between text-[9px] font-mono text-slate-400">
-                <span>0.0 (Low)</span>
-                <span>2.0 (Medium)</span>
-                <span>4.0+ (Critical)</span>
+              <div class="flex justify-between text-[10px] text-mocha-muted font-mono">
+                <span>0.0</span>
+                <span>2.0 (Med)</span>
+                <span>4.0+ (Crit)</span>
               </div>
             </div>
           </div>
 
           <!-- Card 2: Crowd Velocity -->
-          <div class="bg-surface-card border border-surface-border rounded-lg p-4 shadow-sm flex flex-col justify-between">
+          <div class="bg-mocha-card border border-mocha-border rounded-lg p-4 shadow-[0_1px_4px_rgba(45,35,30,0.03)] flex flex-col justify-between">
             <div class="flex items-start justify-between">
               <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Crowd Velocity</span>
-                <span class="text-[10px] text-slate-400 font-mono">BYTETRACK MOVEMENT RATE</span>
+                <span class="text-xs font-semibold text-mocha-subtext uppercase tracking-wider block">Crowd Velocity</span>
+                <span class="text-[11px] text-mocha-muted">ByteTrack Speed</span>
               </div>
-              <span class="material-symbols-outlined text-primary text-2xl">speed</span>
+              <div class="w-8 h-8 rounded-md bg-mocha-accentLight text-mocha-accent flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg">speed</span>
+              </div>
             </div>
             <div class="my-3">
               <div class="flex items-baseline gap-2">
-                <span id="metricVelocity" class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-mono">0.00</span>
-                <span class="text-xs font-mono text-slate-500">BH / S</span>
+                <span id="metricVelocity" class="text-3xl sm:text-4xl font-bold tracking-tight text-mocha-text font-mono tabular-nums">0.00</span>
+                <span class="text-xs text-mocha-subtext font-medium">bh/s</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-slate-600 mt-1 font-mono">
-                <span>Unit: <strong>Body-Heights/sec</strong></span>
-                <span id="velocityFpsTag" class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">FPS: --</span>
+              <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1 font-mono">
+                <span>Unit: <strong>Body-Heights/s</strong></span>
+                <span id="velocityFpsTag" class="text-[10px] bg-mocha-subtle px-1.5 py-0.5 rounded text-mocha-subtext border border-mocha-border">FPS: --</span>
               </div>
             </div>
-            <!-- Progress scale -->
             <div class="space-y-1">
-              <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                <div id="velocityBar" class="h-full bg-primary transition-all duration-300" style="width: 8%;"></div>
+              <div class="w-full h-1.5 bg-mocha-subtle rounded-full overflow-hidden">
+                <div id="velocityBar" class="h-full bg-mocha-accent transition-all duration-300" style="width: 8%;"></div>
               </div>
-              <div class="flex justify-between text-[9px] font-mono text-slate-400">
-                <span>0.0 (Stalled)</span>
-                <span>0.8 (Normal)</span>
+              <div class="flex justify-between text-[10px] text-mocha-muted font-mono">
+                <span>0.0 (Stall)</span>
+                <span>0.8 (Flow)</span>
                 <span>>1.5 (Surge)</span>
               </div>
             </div>
           </div>
 
-          <!-- Card 3: Compression Risk Level -->
-          <div class="bg-surface-card border border-surface-border rounded-lg p-4 shadow-sm flex flex-col justify-between">
+          <!-- Card 3: Compression Risk -->
+          <div class="bg-mocha-card border border-mocha-border rounded-lg p-4 shadow-[0_1px_4px_rgba(45,35,30,0.03)] flex flex-col justify-between">
             <div class="flex items-start justify-between">
               <div>
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">Compression Risk</span>
-                <span class="text-[10px] text-slate-400 font-mono">TOPOLOGY RISK CLASSIFICATION</span>
+                <span class="text-xs font-semibold text-mocha-subtext uppercase tracking-wider block">Compression Risk</span>
+                <span class="text-[11px] text-mocha-muted">Topology Rating</span>
               </div>
-              <span class="material-symbols-outlined text-emerald-600 text-2xl">shield</span>
+              <div class="w-8 h-8 rounded-md bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                <span class="material-symbols-outlined text-lg">shield</span>
+              </div>
             </div>
             <div class="my-3">
               <div class="flex items-baseline gap-2">
-                <span id="metricRisk" class="text-3xl sm:text-4xl font-extrabold text-emerald-700 font-mono">LOW</span>
-                <span id="metricRiskIndex" class="text-xs font-mono text-slate-500">RATIO: 0.00</span>
+                <span id="metricRisk" class="text-3xl sm:text-4xl font-bold tracking-tight text-emerald-700 font-mono">LOW</span>
+                <span id="metricRiskIndex" class="text-xs font-mono text-mocha-muted">RATIO: 0.00</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-slate-600 mt-1 font-mono">
-                <span>Threshold: <strong class="text-slate-900">&lt;0.33 Safe</strong></span>
-                <span id="riskBadgeStatus" class="font-bold text-success">SAFE</span>
+              <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1 font-mono">
+                <span>Saturation: <strong>4.0 p/m²</strong></span>
+                <span id="riskBadgeStatus" class="font-semibold text-emerald-700 font-sans">Safe</span>
               </div>
             </div>
-            <!-- Progress scale -->
             <div class="space-y-1">
-              <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+              <div class="w-full h-1.5 bg-mocha-subtle rounded-full overflow-hidden">
                 <div id="riskBar" class="h-full bg-emerald-600 transition-all duration-300" style="width: 10%;"></div>
               </div>
-              <div class="flex justify-between text-[9px] font-mono text-slate-400">
+              <div class="flex justify-between text-[10px] text-mocha-muted font-mono">
                 <span>Low</span>
-                <span>Medium</span>
+                <span>Elevated</span>
                 <span>Critical</span>
               </div>
             </div>
@@ -331,97 +357,97 @@
 
       </div>
 
-      <!-- RIGHT COLUMN (4 Cols): Alert Events & Engineering Specifications -->
+      <!-- RIGHT COLUMN: Events Queue & Engineering Specs (4 Cols) -->
       <div class="lg:col-span-4 space-y-6">
 
         <!-- REAL-TIME EVENT & ANOMALY QUEUE -->
-        <div class="bg-surface-card border border-surface-border rounded-lg shadow-sm overflow-hidden">
-          <div class="p-3.5 bg-slate-50 border-b border-surface-border flex items-center justify-between">
+        <div class="bg-mocha-card border border-mocha-border rounded-lg shadow-[0_1px_4px_rgba(45,35,30,0.03)] overflow-hidden">
+          <div class="p-3.5 bg-[#f7f2ea] border-b border-mocha-border flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary text-lg">notifications_active</span>
-              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">Real-Time Event & Anomaly Queue</h2>
+              <span class="material-symbols-outlined text-mocha-accent text-lg">notifications</span>
+              <h2 class="text-xs font-bold text-mocha-text uppercase tracking-wide">Real-Time Event Queue</h2>
             </div>
-            <span id="eventQueueCount" class="px-2 py-0.5 text-[10px] font-mono font-bold bg-white text-slate-700 border border-slate-300 rounded">
+            <span id="eventQueueCount" class="px-2 py-0.5 text-[11px] font-mono font-medium bg-white text-mocha-subtext border border-mocha-border rounded">
               0 EVENTS
             </span>
           </div>
 
           <div class="p-4 space-y-3.5">
             <!-- Active Anomaly Status Box -->
-            <div id="alertStatusBox" class="p-3 bg-emerald-50 border border-emerald-200 rounded flex items-start gap-3">
-              <div class="w-6 h-6 rounded bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-                <span class="material-symbols-outlined text-sm">check</span>
+            <div id="alertStatusBox" class="p-3 bg-emerald-50/80 border border-emerald-200 rounded-md flex items-start gap-2.5">
+              <div class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-xs">check</span>
               </div>
               <div class="space-y-0.5">
-                <span class="text-xs font-bold text-emerald-900 block leading-tight">No anomalous crowd compression or stalls detected.</span>
-                <span class="text-[11px] text-emerald-700 font-mono block">NOMINAL SENSOR SWEEP • IDLE</span>
+                <span class="text-xs font-semibold text-emerald-950 block leading-tight">No anomalous crowd compression or stalls detected.</span>
+                <span class="text-[11px] text-emerald-700 font-mono block">Status: Nominal Sweep</span>
               </div>
             </div>
 
-            <!-- Event Log List Container -->
-            <div class="border border-slate-200 rounded overflow-hidden">
-              <div class="bg-slate-100 px-3 py-1.5 text-[10px] font-mono uppercase font-bold text-slate-600 flex justify-between">
-                <span>Incident Markers Log</span>
-                <span>TIMESTAMPS</span>
+            <!-- Incident Markers Log -->
+            <div class="border border-mocha-border rounded-md overflow-hidden">
+              <div class="bg-[#f7f2ea] px-3 py-1.5 text-[10px] font-mono uppercase font-semibold text-mocha-subtext border-b border-mocha-border flex justify-between">
+                <span>Incident Markers</span>
+                <span>Time (sec)</span>
               </div>
-              <div id="eventLogContainer" class="p-3 text-center py-6 text-slate-500 text-xs max-h-56 overflow-y-auto space-y-1">
-                <span class="material-symbols-outlined text-2xl text-slate-300 block mx-auto">playlist_add_check</span>
-                <p class="font-medium text-xs text-slate-700">Queue is clear</p>
-                <p class="text-[11px] text-slate-400">Incident markers will appear here automatically when triggered.</p>
+              <div id="eventLogContainer" class="p-3 text-center py-6 text-mocha-muted text-xs max-h-56 overflow-y-auto space-y-1">
+                <span class="material-symbols-outlined text-2xl text-mocha-borderDark block mx-auto mb-1">playlist_add_check</span>
+                <p class="font-medium text-xs text-mocha-subtext">Queue is clear</p>
+                <p class="text-[11px] text-mocha-muted">Incident markers will appear here automatically when triggered.</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- PIPELINE SPECIFICATIONS & ARCHITECTURE -->
-        <div class="bg-surface-card border border-surface-border rounded-lg shadow-sm overflow-hidden">
-          <div class="p-3.5 bg-slate-50 border-b border-surface-border flex items-center justify-between">
+        <!-- PIPELINE ARCHITECTURE CARD -->
+        <div class="bg-mocha-card border border-mocha-border rounded-lg shadow-[0_1px_4px_rgba(45,35,30,0.03)] overflow-hidden">
+          <div class="p-3.5 bg-[#f7f2ea] border-b border-mocha-border flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary text-lg">memory</span>
-              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">System Pipeline Architecture</h2>
+              <span class="material-symbols-outlined text-mocha-accent text-lg">memory</span>
+              <h2 class="text-xs font-bold text-mocha-text uppercase tracking-wide">Pipeline Architecture</h2>
             </div>
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
 
-          <div class="p-4 space-y-2 text-xs font-mono divide-y divide-slate-100">
+          <div class="p-4 space-y-2 text-xs divide-y divide-[#f1eae0]">
             <div class="py-1.5 flex items-center justify-between">
-              <span class="text-slate-500 font-sans">Object Detection</span>
-              <span id="specModelName" class="font-bold text-slate-900">YOLOv8 (Ultralytics)</span>
+              <span class="text-mocha-subtext">Object Detector</span>
+              <span id="specModelName" class="font-semibold text-mocha-text font-mono">YOLOv8 (Ultralytics)</span>
             </div>
             <div class="py-1.5 flex items-center justify-between">
-              <span class="text-slate-500 font-sans">Multi-Object Tracking</span>
-              <span class="font-bold text-slate-900">ByteTrack Engine</span>
+              <span class="text-mocha-subtext">Multi-Object Tracking</span>
+              <span class="font-semibold text-mocha-text font-mono">ByteTrack</span>
             </div>
             <div class="py-1.5 flex items-center justify-between">
-              <span class="text-slate-500 font-sans">Spatial Density</span>
-              <span class="font-bold text-slate-900">2D Gaussian Kernel</span>
+              <span class="text-mocha-subtext">Density Estimation</span>
+              <span class="font-semibold text-mocha-text font-mono">2D Gaussian Field</span>
             </div>
             <div class="py-1.5 flex items-center justify-between">
-              <span class="text-slate-500 font-sans">Video Encoding</span>
-              <span class="font-bold text-slate-900">H.264 (+faststart)</span>
+              <span class="text-mocha-subtext">Video Transcoder</span>
+              <span class="font-semibold text-mocha-text font-mono">H.264 (+faststart)</span>
             </div>
             <div class="py-1.5 flex items-center justify-between">
-              <span class="text-slate-500 font-sans">Telemetry Cache</span>
-              <span class="font-bold text-slate-900">SHA-256 Hashing</span>
+              <span class="text-mocha-subtext">Result Cache</span>
+              <span class="font-semibold text-mocha-text font-mono">SHA-256 Digest</span>
             </div>
             <div class="py-1.5 flex items-center justify-between">
-              <span class="text-slate-500 font-sans">Persistent Database</span>
-              <span class="font-bold text-slate-900">SQLite (data/crowd.db)</span>
+              <span class="text-mocha-subtext">Database Storage</span>
+              <span class="font-semibold text-mocha-text font-mono">SQLite (data/crowd.db)</span>
             </div>
           </div>
         </div>
 
-        <!-- ALGORITHM & ALERT LOGIC EXPLANATION (VIVA REFERENCE) -->
-        <div class="bg-blue-50/70 border border-blue-200 rounded-lg p-4 space-y-2 text-xs">
-          <div class="flex items-center gap-2 font-bold text-blue-900 uppercase text-[11px]">
-            <span class="material-symbols-outlined text-sm text-primary">psychology</span>
-            Automated Alert Conditions
+        <!-- ALERT CRITERIA REFERENCE -->
+        <div class="bg-[#f7f2ea] border border-mocha-border rounded-lg p-4 space-y-2 text-xs">
+          <div class="flex items-center gap-1.5 font-bold text-mocha-text text-xs">
+            <span class="material-symbols-outlined text-sm text-mocha-accent">psychology</span>
+            Alert Trigger Conditions
           </div>
-          <ul class="space-y-1.5 text-slate-700 text-[11px] list-disc list-inside">
-            <li><strong>HIGH DENSITY:</strong> Local density exceeds 66% of saturation ($sat=4.0	ext{ p/m}^2$).</li>
-            <li><strong>CROWD STALLED:</strong> Speed drops below $0.15	ext{ bh/s}$ in high density (compression risk).</li>
-            <li><strong>RUNNING / SURGE:</strong> Median crowd speed exceeds $1.5	ext{ bh/s}$ (stampede risk).</li>
-            <li><strong>OVER CAPACITY:</strong> Headcount exceeds configured maximum venue limit.</li>
+          <ul class="space-y-1.5 text-mocha-subtext text-xs list-disc list-inside">
+            <li><strong>HIGH DENSITY:</strong> Density &ge; 66% of saturation threshold.</li>
+            <li><strong>CROWD STALLED:</strong> Speed &lt; 0.15 bh/s in dense area (compression).</li>
+            <li><strong>RUNNING / SURGE:</strong> Crowd velocity &gt; 1.5 bh/s (stampede risk).</li>
+            <li><strong>OVER CAPACITY:</strong> Headcount exceeds configured venue limit.</li>
           </ul>
         </div>
 
@@ -430,26 +456,26 @@
     </div>
 
     <!-- RECENT TELEMETRY ANALYSES & EVIDENCE TABLE (SQLITE) -->
-    <div class="bg-surface-card border border-surface-border rounded-lg p-5 shadow-sm space-y-3" id="recentAnalysesContainer">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-200">
+    <div class="bg-mocha-card border border-mocha-border rounded-lg p-5 shadow-[0_1px_4px_rgba(45,35,30,0.03)] space-y-3" id="recentAnalysesContainer">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-mocha-border">
         <div>
-          <span class="text-[10px] font-bold uppercase tracking-widest text-primary font-mono block">EVIDENTIARY ARCHIVE // SQLITE DATABASE</span>
-          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide">Recent Telemetry Analyses & Historical Evidence Log</h2>
+          <span class="text-[10px] font-mono font-bold uppercase text-mocha-accent block">SQLite Database Archive</span>
+          <h2 class="text-sm font-bold text-mocha-text">Recent Telemetry Analyses & Evidence Log</h2>
         </div>
-        <button id="refreshHistoryBtn" type="button" class="px-3 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded flex items-center gap-1.5 transition-colors">
-          <span class="material-symbols-outlined text-sm text-primary">sync</span>
+        <button id="refreshHistoryBtn" type="button" class="px-3 py-1.5 text-xs font-semibold bg-white hover:bg-[#faf6f1] text-mocha-text border border-mocha-border rounded-md flex items-center gap-1.5 transition-colors shadow-sm">
+          <span class="material-symbols-outlined text-sm text-mocha-accent">sync</span>
           Refresh Archive
         </button>
       </div>
 
-      <div class="overflow-x-auto border border-slate-200 rounded">
-        <table class="w-full text-left text-xs font-mono">
-          <thead class="bg-slate-800 text-white uppercase text-[10px] tracking-wider">
+      <div class="overflow-x-auto border border-mocha-border rounded-md">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-[#f7f2ea] text-mocha-text font-bold uppercase text-[10px] tracking-wider border-b border-mocha-border">
             <tr>
               <th class="py-2.5 px-3">Job ID</th>
               <th class="py-2.5 px-3">Video File</th>
-              <th class="py-2.5 px-3">Timestamp</th>
-              <th class="py-2.5 px-3">Peak Headcount</th>
+              <th class="py-2.5 px-3">Time</th>
+              <th class="py-2.5 px-3">Headcount</th>
               <th class="py-2.5 px-3">Peak Density</th>
               <th class="py-2.5 px-3">Risk Level</th>
               <th class="py-2.5 px-3">Alerts Raised</th>
@@ -457,9 +483,9 @@
               <th class="py-2.5 px-3 text-right">Action</th>
             </tr>
           </thead>
-          <tbody id="historyTableBody" class="divide-y divide-slate-200 bg-white">
+          <tbody id="historyTableBody" class="divide-y divide-[#f1eae0] bg-white font-mono">
             <tr>
-              <td colspan="9" class="py-6 text-center text-slate-500 font-sans">Loading historical records from SQLite...</td>
+              <td colspan="9" class="py-6 text-center text-mocha-muted font-sans">Loading historical records from SQLite...</td>
             </tr>
           </tbody>
         </table>
@@ -469,43 +495,45 @@
   </main>
 
   <!-- THRESHOLD CONFIGURATION MODAL -->
-  <div id="configModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white border-2 border-slate-800 rounded-lg max-w-md w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+  <div id="configModal" class="fixed inset-0 z-50 bg-[#1c1512]/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white border border-mocha-border rounded-lg max-w-md w-full shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+      
       <!-- Modal Header -->
-      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+      <div class="bg-mocha-header text-white px-5 py-3.5 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary-light text-base">tune</span>
-          <span class="font-bold text-xs uppercase tracking-wider">Inference Sensitivity & Parameters</span>
+          <span class="material-symbols-outlined text-[#e2a88e] text-base">tune</span>
+          <span class="font-bold text-xs uppercase tracking-wider">Inference Thresholds & Parameters</span>
         </div>
-        <button id="closeConfigModalBtn" type="button" class="text-slate-400 hover:text-white transition-colors">
+        <button id="closeConfigModalBtn" type="button" class="text-mocha-headerMuted hover:text-white transition-colors">
           <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
       <!-- Modal Body -->
-      <div class="p-5 space-y-4 text-xs">
+      <div class="p-5 space-y-4 text-xs font-sans">
+        
         <!-- Density Threshold Slider -->
         <div class="space-y-1.5">
           <div class="flex justify-between items-center">
-            <label for="densityThresholdSlider" class="font-bold text-slate-800 uppercase tracking-wide text-[11px]">Crowd Density Alert Ratio (--density-alert)</label>
-            <span id="densitySliderVal" class="font-mono font-bold text-primary bg-blue-50 px-2 py-0.5 rounded border border-blue-200">0.66</span>
+            <label for="densityThresholdSlider" class="font-semibold text-mocha-text">Crowd Density Alert Ratio (--density-alert)</label>
+            <span id="densitySliderVal" class="font-mono font-bold text-mocha-accent bg-mocha-accentLight px-2 py-0.5 rounded border border-mocha-accentBorder">0.66</span>
           </div>
-          <input id="densityThresholdSlider" type="range" min="0.2" max="1.0" step="0.05" value="0.66" class="w-full accent-primary cursor-pointer"/>
-          <div class="flex justify-between text-[10px] font-mono text-slate-400">
+          <input id="densityThresholdSlider" type="range" min="0.2" max="1.0" step="0.05" value="0.66" class="w-full accent-[#8c5338] cursor-pointer"/>
+          <div class="flex justify-between text-[10px] font-mono text-mocha-muted">
             <span>0.20 (Sensitive)</span>
             <span>0.66 (Standard)</span>
-            <span>1.00 (High Surge)</span>
+            <span>1.00 (Surge Only)</span>
           </div>
         </div>
 
         <!-- Venue Capacity Limit Input -->
         <div class="space-y-1.5">
           <div class="flex justify-between items-center">
-            <label for="capacityInput" class="font-bold text-slate-800 uppercase tracking-wide text-[11px]">Venue Occupancy Limit (--capacity)</label>
-            <span id="capacityVal" class="font-mono font-bold text-primary bg-blue-50 px-2 py-0.5 rounded border border-blue-200">500 Persons</span>
+            <label for="capacityInput" class="font-semibold text-mocha-text">Venue Capacity Limit (--capacity)</label>
+            <span id="capacityVal" class="font-mono font-bold text-mocha-accent bg-mocha-accentLight px-2 py-0.5 rounded border border-mocha-accentBorder">500 Persons</span>
           </div>
-          <input id="capacityInput" type="number" min="10" max="5000" step="10" value="500" class="w-full bg-slate-50 border border-slate-300 rounded px-3 py-2 text-xs font-mono font-bold text-slate-900 focus:outline focus:ring-2 focus:ring-primary"/>
-          <div class="flex justify-between text-[10px] font-mono text-slate-400">
+          <input id="capacityInput" type="number" min="10" max="5000" step="10" value="500" class="w-full bg-[#fbf8f5] border border-mocha-border rounded px-3 py-2 text-xs font-mono font-bold text-mocha-text focus:outline focus:ring-2 focus:ring-[#8c5338]"/>
+          <div class="flex justify-between text-[10px] font-mono text-mocha-muted">
             <span>Min: 10</span>
             <span>Default: 500</span>
             <span>Max: 5000</span>
@@ -515,53 +543,55 @@
         <!-- YOLO Confidence Threshold -->
         <div class="space-y-1.5">
           <div class="flex justify-between items-center">
-            <label for="confInput" class="font-bold text-slate-800 uppercase tracking-wide text-[11px]">YOLOv8 Detection Confidence (--conf)</label>
-            <span id="confVal" class="font-mono font-bold text-primary bg-blue-50 px-2 py-0.5 rounded border border-blue-200">0.15</span>
+            <label for="confSlider" class="font-semibold text-mocha-text">YOLOv8 Confidence Score (--conf)</label>
+            <span id="confVal" class="font-mono font-bold text-mocha-accent bg-mocha-accentLight px-2 py-0.5 rounded border border-mocha-accentBorder">0.15</span>
           </div>
-          <input id="confSlider" type="range" min="0.10" max="0.80" step="0.05" value="0.15" class="w-full accent-primary cursor-pointer"/>
-          <div class="flex justify-between text-[10px] font-mono text-slate-400">
+          <input id="confSlider" type="range" min="0.10" max="0.80" step="0.05" value="0.15" class="w-full accent-[#8c5338] cursor-pointer"/>
+          <div class="flex justify-between text-[10px] font-mono text-mocha-muted">
             <span>0.10 (High Recall)</span>
             <span>0.15 (Default)</span>
             <span>0.50 (High Precision)</span>
           </div>
         </div>
+
       </div>
 
       <!-- Modal Footer -->
-      <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-        <button id="cancelModalBtn" type="button" class="px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 rounded border border-slate-300 transition-colors">
+      <div class="px-5 py-3 bg-[#f7f2ea] border-t border-mocha-border flex items-center justify-between">
+        <button id="cancelModalBtn" type="button" class="px-3.5 py-1.5 text-xs font-semibold text-mocha-subtext hover:bg-mocha-border rounded border border-mocha-border transition-colors">
           Cancel
         </button>
-        <button id="saveModalBtn" type="button" class="px-4 py-1.5 text-xs font-bold bg-primary hover:bg-primary-container text-white rounded uppercase tracking-wider transition-colors shadow-sm">
+        <button id="saveModalBtn" type="button" class="px-4 py-1.5 text-xs font-bold bg-mocha-accent hover:bg-mocha-accentHover text-white rounded transition-colors shadow-sm">
           Apply Parameters
         </button>
       </div>
+
     </div>
   </div>
 
   <!-- CLEAN ACADEMIC FOOTER -->
-  <footer class="bg-darkness text-slate-400 border-t border-slate-800 text-xs py-5 mt-10">
-    <div class="max-w-[1280px] mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+  <footer class="bg-white border-t border-mocha-border text-mocha-subtext text-xs py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2.5">
       <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-primary"></span>
-        <span class="font-semibold text-slate-200">College Mini Project:</span>
+        <span class="w-2 h-2 rounded-full bg-mocha-accent"></span>
+        <span class="font-semibold text-mocha-text">College Mini Project:</span>
         <span>Neural Topology Mapping for Early-Stage Crowd Surge and Compression Mitigation</span>
       </div>
-      <div class="flex items-center gap-3 font-mono text-[11px]">
+      <div class="flex items-center gap-3 font-mono text-[11px] text-mocha-subtext">
         <span>FastAPI</span>
-        <span>•</span>
+        <span>&bull;</span>
         <span>YOLOv8</span>
-        <span>•</span>
+        <span>&bull;</span>
         <span>ByteTrack</span>
-        <span>•</span>
+        <span>&bull;</span>
         <span>OpenCV</span>
-        <span>•</span>
+        <span>&bull;</span>
         <span>SQLite</span>
       </div>
     </div>
   </footer>
 
-  <!-- APPLICATION CONTROLLER SCRIPT -->
+  <!-- CONTROLLER SCRIPT (100% Robust Logic & Complete Functional Binding) -->
   <script>
   (function initDashboard() {
     // DOM Elements
@@ -642,7 +672,7 @@
       conf: 0.15
     };
 
-    // Initialize API Info
+    // Boot Server Info
     async function bootServerInfo() {
       try {
         const res = await fetch('/api/info');
@@ -723,7 +753,7 @@
             const fps = data.fps ? `FPS: ${data.fps}` : 'FPS: --';
             showProcessingUI('Detecting & Tracking', pct, data.message || 'Running YOLOv8 + ByteTrack...', fText, eta, fps);
           } else if (data.status === 'encoding') {
-            showProcessingUI('Encoding', 95, data.message || 'Transcoding H.264 stream for web playback...', 'COMPLETE', 'ETA: <1s', 'H.264');
+            showProcessingUI('Encoding', 95, data.message || 'Transcoding H.264 stream for browser...', 'COMPLETE', 'ETA: <1s', 'H.264');
           } else if (data.status === 'done') {
             stopPolling();
             onJobCompleted(jobId, data.cached);
@@ -811,7 +841,7 @@
 
     async function loadSampleFeed() {
       setPipelineBusy(true);
-      showProcessingUI('Ingesting Sample', 15, 'Requesting test.mp4 demonstration feed from server...', 'SAMPLE', 'Initializing', '--');
+      showProcessingUI('Ingesting Sample', 15, 'Loading test.mp4 demonstration feed from server...', 'SAMPLE', 'Initializing', '--');
       try {
         const res = await fetch('/api/sample', { method: 'POST' });
         if (!res.ok) {
@@ -892,20 +922,20 @@
       const densityPct = Math.min(Math.round((peakDensity / 4.0) * 100), 100);
       if (densityBar) {
         densityBar.style.width = `${densityPct}%`;
-        if (densityPct > 75) densityBar.className = 'h-full bg-error';
-        else if (densityPct > 45) densityBar.className = 'h-full bg-amber-500';
-        else densityBar.className = 'h-full bg-primary';
+        if (densityPct > 75) densityBar.className = 'h-full bg-rose-600';
+        else if (densityPct > 45) densityBar.className = 'h-full bg-amber-600';
+        else densityBar.className = 'h-full bg-mocha-accent';
       }
       if (metricDensityStatus) {
         if (densityPct > 75) {
-          metricDensityStatus.textContent = 'CRITICAL';
-          metricDensityStatus.className = 'font-bold text-error';
+          metricDensityStatus.textContent = 'Critical';
+          metricDensityStatus.className = 'font-semibold text-rose-700 font-sans';
         } else if (densityPct > 45) {
-          metricDensityStatus.textContent = 'ELEVATED';
-          metricDensityStatus.className = 'font-bold text-amber-600';
+          metricDensityStatus.textContent = 'Elevated';
+          metricDensityStatus.className = 'font-semibold text-amber-700 font-sans';
         } else {
-          metricDensityStatus.textContent = 'NORMAL';
-          metricDensityStatus.className = 'font-bold text-success';
+          metricDensityStatus.textContent = 'Normal';
+          metricDensityStatus.className = 'font-semibold text-emerald-700 font-sans';
         }
       }
 
@@ -922,25 +952,25 @@
       if (metricRisk) {
         metricRisk.textContent = risk;
         if (risk === 'CRITICAL') {
-          metricRisk.className = 'text-3xl sm:text-4xl font-extrabold text-error font-mono';
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-rose-700 font-mono';
         } else if (risk === 'HIGH') {
-          metricRisk.className = 'text-3xl sm:text-4xl font-extrabold text-orange-600 font-mono';
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-amber-700 font-mono';
         } else if (risk === 'MEDIUM') {
-          metricRisk.className = 'text-3xl sm:text-4xl font-extrabold text-amber-600 font-mono';
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-amber-600 font-mono';
         } else {
-          metricRisk.className = 'text-3xl sm:text-4xl font-extrabold text-emerald-700 font-mono';
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-emerald-700 font-mono';
         }
       }
       if (metricRiskIndex) {
         metricRiskIndex.textContent = `RATIO: ${(peakDensity / 4.0).toFixed(2)}`;
       }
       if (riskBadgeStatus) {
-        riskBadgeStatus.textContent = risk === 'LOW' ? 'SAFE' : risk;
-        riskBadgeStatus.className = risk === 'LOW' ? 'font-bold text-success' : 'font-bold text-error';
+        riskBadgeStatus.textContent = risk === 'LOW' ? 'Safe' : risk;
+        riskBadgeStatus.className = risk === 'LOW' ? 'font-semibold text-emerald-700 font-sans' : 'font-semibold text-rose-700 font-sans';
       }
       if (riskBar) {
-        if (risk === 'CRITICAL') { riskBar.style.width = '100%'; riskBar.className = 'h-full bg-error'; }
-        else if (risk === 'HIGH') { riskBar.style.width = '75%'; riskBar.className = 'h-full bg-orange-500'; }
+        if (risk === 'CRITICAL') { riskBar.style.width = '100%'; riskBar.className = 'h-full bg-rose-600'; }
+        else if (risk === 'HIGH') { riskBar.style.width = '75%'; riskBar.className = 'h-full bg-amber-600'; }
         else if (risk === 'MEDIUM') { riskBar.style.width = '50%'; riskBar.className = 'h-full bg-amber-500'; }
         else { riskBar.style.width = '25%'; riskBar.className = 'h-full bg-emerald-600'; }
       }
@@ -952,34 +982,34 @@
       if (eventQueueCount) {
         eventQueueCount.textContent = `${totalStartCount} EVENT${totalStartCount === 1 ? '' : 'S'}`;
         if (totalStartCount > 0) {
-          eventQueueCount.className = 'px-2 py-0.5 text-[10px] font-mono font-bold bg-error text-white rounded';
+          eventQueueCount.className = 'px-2 py-0.5 text-[11px] font-mono font-medium bg-rose-700 text-white rounded';
         } else {
-          eventQueueCount.className = 'px-2 py-0.5 text-[10px] font-mono font-bold bg-white text-slate-700 border border-slate-300 rounded';
+          eventQueueCount.className = 'px-2 py-0.5 text-[11px] font-mono font-medium bg-white text-mocha-subtext border border-mocha-border rounded';
         }
       }
 
       if (alertStatusBox) {
         if (totalStartCount > 0) {
           const lastAlert = startEvents[startEvents.length - 1];
-          alertStatusBox.className = 'p-3 bg-red-50 border border-red-200 rounded flex items-start gap-3';
+          alertStatusBox.className = 'p-3 bg-rose-50 border border-rose-200 rounded-md flex items-start gap-2.5';
           alertStatusBox.innerHTML = `
-            <div class="w-6 h-6 rounded bg-error text-white flex items-center justify-center shrink-0 mt-0.5">
-              <span class="material-symbols-outlined text-sm">warning</span>
+            <div class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-xs">warning</span>
             </div>
             <div class="space-y-0.5">
-              <span class="text-xs font-bold text-error block leading-tight">ACTIVE ALERT: ${lastAlert.alert} (${lastAlert.time_s}s)</span>
-              <span class="text-[11px] text-slate-600 font-mono block">TRIGGERED ${totalStartCount} ANOMALY EVENT(S)</span>
+              <span class="text-xs font-semibold text-rose-950 block leading-tight">ACTIVE ALERT: ${lastAlert.alert} (${lastAlert.time_s}s)</span>
+              <span class="text-[11px] text-mocha-subtext font-mono block">Triggered ${totalStartCount} anomaly marker(s)</span>
             </div>
           `;
         } else {
-          alertStatusBox.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded flex items-start gap-3';
+          alertStatusBox.className = 'p-3 bg-emerald-50/80 border border-emerald-200 rounded-md flex items-start gap-2.5';
           alertStatusBox.innerHTML = `
-            <div class="w-6 h-6 rounded bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-              <span class="material-symbols-outlined text-sm">check</span>
+            <div class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-xs">check</span>
             </div>
             <div class="space-y-0.5">
-              <span class="text-xs font-bold text-emerald-900 block leading-tight">No anomalous crowd compression or stalls detected.</span>
-              <span class="text-[11px] text-emerald-700 font-mono block">NOMINAL SENSOR SWEEP • VERIFIED</span>
+              <span class="text-xs font-medium text-emerald-950 block leading-tight">No anomalous crowd compression or stalls detected.</span>
+              <span class="text-[11px] text-emerald-700 font-mono block">Status: Nominal Sweep</span>
             </div>
           `;
         }
@@ -989,25 +1019,25 @@
       if (eventLogContainer) {
         if (events.length === 0) {
           eventLogContainer.innerHTML = `
-            <span class="material-symbols-outlined text-2xl text-slate-300 block mx-auto">playlist_add_check</span>
-            <p class="font-medium text-xs text-slate-700">Queue is clear</p>
-            <p class="text-[11px] text-slate-400">No incident markers triggered during optical ingestion.</p>
+            <span class="material-symbols-outlined text-2xl text-mocha-borderDark block mx-auto mb-1">playlist_add_check</span>
+            <p class="font-medium text-xs text-mocha-subtext">Queue is clear</p>
+            <p class="text-[11px] text-mocha-muted">Incident markers will appear here automatically when triggered.</p>
           `;
         } else {
-          let html = '<div class="text-left space-y-2 text-xs">';
+          let html = '<div class="text-left space-y-1.5 text-xs">';
           events.forEach((ev) => {
             const isStart = ev.state === 'START';
-            const bgClass = isStart ? 'bg-red-50 border-red-200' : 'bg-slate-50 border-slate-200';
-            const textClass = isStart ? 'text-error font-bold' : 'text-slate-800 font-semibold';
+            const bgClass = isStart ? 'bg-rose-50 border-rose-200' : 'bg-[#f7f2ea] border-mocha-border';
+            const textClass = isStart ? 'text-rose-800 font-semibold' : 'text-mocha-text font-medium';
             const speedTxt = ev.median_speed_bh !== null && ev.median_speed_bh !== undefined ? ` • Speed: ${ev.median_speed_bh} bh/s` : '';
             
             html += `
               <div class="p-2 border ${bgClass} rounded flex items-start justify-between">
                 <div>
-                  <span class="${textClass} font-mono block text-[11px]">[T+${ev.time_s}s] ${ev.alert} &mdash; ${ev.state}</span>
-                  <span class="text-slate-500 text-[11px]">Peak Density: ${ev.peak_density || 0}${speedTxt}</span>
+                  <span class="${textClass} font-mono block text-[11px]">[T+${ev.time_s}s] ${ev.alert}</span>
+                  <span class="text-mocha-subtext text-[11px]">Peak Density: ${ev.peak_density || 0}${speedTxt}</span>
                 </div>
-                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded ${isStart ? 'bg-error text-white font-bold' : 'bg-slate-200 text-slate-700'}">${ev.state}</span>
+                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded ${isStart ? 'bg-rose-600 text-white font-semibold' : 'bg-mocha-subtle text-mocha-subtext'}">${ev.state}</span>
               </div>
             `;
           });
@@ -1036,46 +1066,46 @@
 
       if (metricHeadcount) metricHeadcount.textContent = '0';
       if (metricDensity) metricDensity.textContent = '0.0 (sat=4.0)';
-      if (densityBar) densityBar.style.width = '4%';
+      if (densityBar) { densityBar.style.width = '4%'; densityBar.className = 'h-full bg-mocha-accent'; }
       if (metricDensityStatus) {
-        metricDensityStatus.textContent = 'NORMAL';
-        metricDensityStatus.className = 'font-bold text-success';
+        metricDensityStatus.textContent = 'Normal';
+        metricDensityStatus.className = 'font-semibold text-emerald-700 font-sans';
       }
       if (metricVelocity) metricVelocity.textContent = '0.00';
       if (velocityFpsTag) velocityFpsTag.textContent = 'FPS: --';
       if (monitorFpsText) monitorFpsText.textContent = 'FPS: 0.0';
       if (metricRisk) {
         metricRisk.textContent = 'LOW';
-        metricRisk.className = 'text-3xl sm:text-4xl font-extrabold text-emerald-700 font-mono';
+        metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-emerald-700 font-mono';
       }
       if (metricRiskIndex) metricRiskIndex.textContent = 'RATIO: 0.00';
       if (riskBadgeStatus) {
-        riskBadgeStatus.textContent = 'SAFE';
-        riskBadgeStatus.className = 'font-bold text-success';
+        riskBadgeStatus.textContent = 'Safe';
+        riskBadgeStatus.className = 'font-semibold text-emerald-700 font-sans';
       }
       if (riskBar) { riskBar.style.width = '10%'; riskBar.className = 'h-full bg-emerald-600'; }
 
       if (eventQueueCount) {
         eventQueueCount.textContent = '0 EVENTS';
-        eventQueueCount.className = 'px-2 py-0.5 text-[10px] font-mono font-bold bg-white text-slate-700 border border-slate-300 rounded';
+        eventQueueCount.className = 'px-2 py-0.5 text-[11px] font-mono font-medium bg-white text-mocha-subtext border border-mocha-border rounded';
       }
       if (alertStatusBox) {
-        alertStatusBox.className = 'p-3 bg-emerald-50 border border-emerald-200 rounded flex items-start gap-3';
+        alertStatusBox.className = 'p-3 bg-emerald-50/80 border border-emerald-200 rounded-md flex items-start gap-2.5';
         alertStatusBox.innerHTML = `
-          <div class="w-6 h-6 rounded bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
-            <span class="material-symbols-outlined text-sm">check</span>
+          <div class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+            <span class="material-symbols-outlined text-xs">check</span>
           </div>
           <div class="space-y-0.5">
-            <span class="text-xs font-bold text-emerald-900 block leading-tight">No anomalous crowd compression or stalls detected.</span>
-            <span class="text-[11px] text-emerald-700 font-mono block">NOMINAL SENSOR SWEEP • IDLE</span>
+            <span class="text-xs font-medium text-emerald-950 block leading-tight">No anomalous crowd compression or stalls detected.</span>
+            <span class="text-[11px] text-emerald-700 font-mono block">Status: Nominal Sweep</span>
           </div>
         `;
       }
       if (eventLogContainer) {
         eventLogContainer.innerHTML = `
-          <span class="material-symbols-outlined text-2xl text-slate-300 block mx-auto">playlist_add_check</span>
-          <p class="font-medium text-xs text-slate-700">Queue is clear</p>
-          <p class="text-[11px] text-slate-400">Incident markers will appear here automatically when triggered.</p>
+          <span class="material-symbols-outlined text-2xl text-mocha-borderDark block mx-auto mb-1">playlist_add_check</span>
+          <p class="font-medium text-xs text-mocha-subtext">Queue is clear</p>
+          <p class="text-[11px] text-mocha-muted">Incident markers will appear here automatically when triggered.</p>
         `;
       }
       if (metaInputText) metaInputText.textContent = 'Awaiting Video Input';
@@ -1091,7 +1121,7 @@
         if (!jobs || jobs.length === 0) {
           historyTableBody.innerHTML = `
             <tr>
-              <td colspan="9" class="py-6 text-center text-slate-400 font-sans">No analyses recorded in SQLite registry yet.</td>
+              <td colspan="9" class="py-6 text-center text-mocha-muted font-sans">No analyses recorded in SQLite registry yet.</td>
             </tr>
           `;
           return;
@@ -1099,26 +1129,26 @@
 
         let html = '';
         jobs.forEach((j, index) => {
-          const isZebra = index % 2 === 1 ? 'bg-slate-50' : 'bg-white';
+          const isZebra = index % 2 === 1 ? 'bg-[#faf6f1]/60' : 'bg-white';
           const formattedDate = j.created_at ? new Date(j.created_at).toLocaleTimeString() : '--:--:--';
-          const riskColor = j.risk_level === 'CRITICAL' ? 'text-error font-bold' : j.risk_level === 'HIGH' ? 'text-orange-600 font-bold' : j.risk_level === 'MEDIUM' ? 'text-amber-600 font-bold' : 'text-emerald-700';
+          const riskColor = j.risk_level === 'CRITICAL' ? 'text-rose-700 font-semibold' : j.risk_level === 'HIGH' ? 'text-amber-700 font-semibold' : j.risk_level === 'MEDIUM' ? 'text-amber-600 font-semibold' : 'text-emerald-700 font-medium';
 
           html += `
-            <tr class="${isZebra} hover:bg-blue-50/50 transition-colors cursor-pointer" data-job-id="${j.id}">
-              <td class="py-2.5 px-3 font-mono font-bold text-primary">${j.id}</td>
-              <td class="py-2.5 px-3 text-slate-900 max-w-[140px] truncate" title="${j.filename}">${j.filename}</td>
-              <td class="py-2.5 px-3 text-slate-500">${formattedDate}</td>
-              <td class="py-2.5 px-3 font-bold">${j.max_people !== null ? j.max_people : '--'}</td>
-              <td class="py-2.5 px-3 font-mono">${j.peak_density !== null ? Number(j.peak_density).toFixed(2) : '--'}</td>
+            <tr class="${isZebra} hover:bg-mocha-accentLight/50 transition-colors cursor-pointer" data-job-id="${j.id}">
+              <td class="py-2.5 px-3 font-semibold text-mocha-accent">${j.id}</td>
+              <td class="py-2.5 px-3 text-mocha-text max-w-[140px] truncate font-sans font-medium" title="${j.filename}">${j.filename}</td>
+              <td class="py-2.5 px-3 text-mocha-subtext text-xs">${formattedDate}</td>
+              <td class="py-2.5 px-3 font-medium text-mocha-text">${j.max_people !== null ? j.max_people : '--'}</td>
+              <td class="py-2.5 px-3 text-mocha-subtext">${j.peak_density !== null ? Number(j.peak_density).toFixed(2) : '--'}</td>
               <td class="py-2.5 px-3 ${riskColor}">${j.risk_level || '--'}</td>
               <td class="py-2.5 px-3">
-                <span class="px-1.5 py-0.5 text-[10px] rounded ${j.alert_count > 0 ? 'bg-red-100 text-error font-bold' : 'bg-slate-100 text-slate-600'}">${j.alert_count || 0}</span>
+                <span class="px-1.5 py-0.5 text-[10px] rounded ${j.alert_count > 0 ? 'bg-rose-100 text-rose-800 font-semibold' : 'bg-mocha-subtle text-mocha-subtext'}">${j.alert_count || 0}</span>
               </td>
               <td class="py-2.5 px-3">
-                <span class="px-1.5 py-0.5 text-[10px] rounded ${j.status === 'done' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'} uppercase font-bold">${j.status}</span>
+                <span class="px-1.5 py-0.5 text-[10px] rounded ${j.status === 'done' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'} uppercase font-semibold">${j.status}</span>
               </td>
               <td class="py-2.5 px-3 text-right">
-                <button class="px-2.5 py-1 text-[11px] bg-primary text-white hover:bg-primary-container rounded transition-colors view-history-btn" data-job-id="${j.id}" type="button">
+                <button class="px-2.5 py-1 text-[11px] bg-mocha-accent text-white hover:bg-mocha-accentHover font-sans rounded transition-colors shadow-sm view-history-btn" data-job-id="${j.id}" type="button">
                   Load
                 </button>
               </td>
@@ -1153,7 +1183,7 @@
 
     if (errorRetryBtn) errorRetryBtn.addEventListener('click', flushPipeline);
 
-    // Modal controls
+    // Modal Controls
     function openModal() {
       if (configModal) {
         configModal.classList.remove('hidden');
@@ -1195,7 +1225,7 @@
       });
     }
 
-    // Expose global methods
+    // Expose Global Methods
     window.loadSampleFeed = loadSampleFeed;
     window.flushPipeline = flushPipeline;
     window.onJobCompleted = onJobCompleted;
