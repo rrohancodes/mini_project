@@ -170,6 +170,20 @@ def main():
     p.add_argument("--summary", default=None, help="Path to write summary JSON")  # [PHASE2]
     args = p.parse_args()
 
+    # Ensure tracking dependency lapx is available for ByteTrack
+    try:
+        import lapx  # noqa: F401
+    except ImportError:
+        try:
+            import lap  # noqa: F401
+        except ImportError:
+            try:
+                import subprocess, sys
+                print("[AI INIT] Installing missing ByteTrack solver 'lapx'...")
+                subprocess.run([sys.executable, "-m", "pip", "install", "-q", "lapx"], check=False)
+            except Exception:
+                pass
+
     from ultralytics import YOLO
 
     model = YOLO(args.model)

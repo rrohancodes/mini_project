@@ -485,8 +485,11 @@ def run_real_job(job: dict, params: dict):
     if rc != 0:
         err_msg = stderr.strip() or stdout.strip() or f"Process failed with exit code {rc}"
         print(f"[PIPELINE FAILURE] Job {job_id} error: {err_msg}")
+        # Extract actual exception from the end of the traceback
+        lines = [line.strip() for line in err_msg.splitlines() if line.strip()]
+        short_err = lines[-1] if lines else f"Process failed with exit code {rc}"
         job["status"] = "error"
-        job["message"] = f"Inference execution failed: {err_msg[:120]}"
+        job["message"] = f"Inference execution failed: {short_err}"
         db_update_job_error(job_id, err_msg)
         return
         
