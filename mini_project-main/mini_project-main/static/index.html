@@ -981,6 +981,13 @@
         if (metaModelText) metaModelText.textContent = runtimeInfo.model || 'YOLOv8';
         if (specModelName) specModelName.textContent = runtimeInfo.model || 'YOLOv8 (Ultralytics)';
         if (metaDeviceText) metaDeviceText.textContent = runtimeInfo.device || 'CPU Inference';
+
+        if (runtimeInfo.capacity && !localStorage.getItem('crowd_density_config')) {
+          configSettings.capacity = runtimeInfo.capacity;
+          if (runtimeInfo.density_alert) configSettings.densityAlert = runtimeInfo.density_alert;
+          if (runtimeInfo.conf) configSettings.conf = runtimeInfo.conf;
+          updateSettingsPillUI();
+        }
       } catch (err) {
         console.warn('Server info fetch error:', err);
         if (metaDeviceText) metaDeviceText.textContent = 'Server Offline (Check port 8000)';
@@ -1218,6 +1225,14 @@
     function fillTelemetryMetrics(results) {
       currentResults = results;
       currentTimeline = results.timeline || [];
+      if (results.capacity !== undefined && results.capacity !== null) {
+        configSettings.capacity = parseInt(results.capacity) || configSettings.capacity;
+        updateSettingsPillUI();
+      }
+      if (results.density_alert !== undefined && results.density_alert !== null) {
+        configSettings.densityAlert = parseFloat(results.density_alert) || configSettings.densityAlert;
+        updateSettingsPillUI();
+      }
       const maxPeople = results.max_people !== undefined ? results.max_people : 0;
       const totalIds = results.total_ids !== undefined ? results.total_ids : 0;
       const peakDensity = results.peak_density !== undefined ? results.peak_density : 0.0;

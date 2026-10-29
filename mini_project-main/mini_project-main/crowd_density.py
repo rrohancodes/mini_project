@@ -431,12 +431,15 @@ def main():
     # [PHASE2] Summary metrics export
     if args.summary:
         overall_med_speed = float(round(statistics.median(all_median_speeds), 2)) if all_median_speeds else None
+        final_risk = "CRITICAL" if int(max_people_count) > args.capacity else str(highest_risk_name)
         summary_data = {
             "max_people": int(max_people_count),
             "peak_density": float(round(max_peak_s, 2)),
             "median_speed": overall_med_speed,
-            "risk_level": str(highest_risk_name),
+            "risk_level": final_risk,
             "total_ids": int(len(seen_ids)),
+            "capacity": int(args.capacity),
+            "density_alert": float(args.density_alert),
             "timeline": timeline,
         }
         with open(args.summary, "w") as sf:

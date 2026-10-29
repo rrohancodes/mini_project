@@ -31,6 +31,9 @@ parser.add_argument("--port", type=int, default=8000, help="Port to run server o
 parser.add_argument("--host", default="0.0.0.0", help="Host address to bind")
 parser.add_argument("--model", default="yolov8m.pt", help="YOLO model path for real inference")
 parser.add_argument("--imgsz", type=int, default=1280, help="Inference resolution")
+parser.add_argument("--capacity", type=int, default=500, help="Default venue capacity limit")
+parser.add_argument("--density-alert", type=float, default=0.66, help="Default density alert ratio")
+parser.add_argument("--conf", type=float, default=0.15, help="Default YOLO confidence threshold")
 args, unknown = parser.parse_known_args()
 
 MOCK_MODE = args.mock
@@ -38,6 +41,9 @@ MODEL_NAME = args.model
 DEFAULT_IMGSZ = args.imgsz
 PORT = args.port
 HOST = args.host
+DEFAULT_CAPACITY = args.capacity
+DEFAULT_DENSITY_ALERT = args.density_alert
+DEFAULT_CONF = args.conf
 
 BASE_DIR = Path(__file__).resolve().parent
 UPLOADS_DIR = BASE_DIR / "uploads"
@@ -365,19 +371,35 @@ def background_worker():
             print(f"[WORKER UNEXPECTED ERROR]: {e}")
             time.sleep(1)
 
+def get_mock_annotated_video() -> Optional[Path]:
+    """Returns the path to the pre-transcoded web-native H.264 video or out.mp4 for rich mock playback."""
+    annotated = DATA_DIR / "mock_annotated.mp4"
+    if annotated.exists() and annotated.stat().st_size > 1000000:
+        return annotated
+    annotated_mirror = BASE_DIR / "mini_project-main" / "mini_project-main" / "data" / "mock_annotated.mp4"
+    if annotated_mirror.exists() and annotated_mirror.stat().st_size > 1000000:
+        return annotated_mirror
+    out_mp4 = BASE_DIR / "out.mp4"
+    if out_mp4.exists():
+        return out_mp4
+    out_mirror = BASE_DIR / "mini_project-main" / "mini_project-main" / "out.mp4"
+    if out_mirror.exists():
+        return out_mirror
+    return None
+
 def run_mock_job(job: dict, params: dict):
     job_id = job["id"]
     job["status"] = "processing"
     job["message"] = "Detecting & tracking simulated crowd stream..."
     
-    total_frames = 240
-    fps = 26.5
+    total_frames = 531
+    fps = 25.0
     cap_val = params.get("capacity", 500)
     density_alert_val = params.get("density_alert", 0.66)
     
-    # Simulate progress over ~10 seconds
+    # Simulate progress over ~6 seconds
     for step in range(1, 101):
-        time.sleep(0.1)
+        time.sleep(0.06)
         cur_frame = int((step / 100.0) * total_frames)
         remaining_frames = max(total_frames - cur_frame, 0)
         eta_s = round(remaining_frames / fps, 1)
@@ -392,27 +414,36 @@ def run_mock_job(job: dict, params: dict):
     # Encoding phase
     job["status"] = "encoding"
     job["message"] = "Transcoding stream to web-native H.264 (+faststart)..."
-    time.sleep(1.2)
+    time.sleep(0.6)
     
-    upload_path = Path(job["upload_path"])
+    upload_path = Path(job.get("upload_path") or str(BASE_DIR / "test.mp4"))
     final_video = OUTPUTS_DIR / f"{job_id}.mp4"
     alerts_csv = OUTPUTS_DIR / f"{job_id}_alerts.csv"
     
-    # Transcode upload video or copy
-    success = transcode_to_h264(upload_path, final_video)
-    if not success or not final_video.exists():
-        shutil.copyfile(upload_path, final_video)
+    # Use annotated out.mp4 for rich visual telemetry playback in mock mode
+    mock_source = get_mock_annotated_video()
+    if mock_source and mock_source.exists():
+        if "mock_annotated" in mock_source.name:
+            shutil.copyfile(mock_source, final_video)
+        else:
+            success = transcode_to_h264(mock_source, final_video)
+            if not success or not final_video.exists():
+                shutil.copyfile(mock_source, final_video)
+    else:
+        success = transcode_to_h264(upload_path, final_video)
+        if not success or not final_video.exists():
+            shutil.copyfile(upload_path, final_video)
     
-    # Build events list respecting parameters
+    # Build events list respecting parameters and matching out.mp4 duration
     mock_events = [
         {"time_s": 2.40, "alert": "HIGH DENSITY", "state": "START", "peak_density": 2.85, "hotspot_people": 14, "median_speed_bh": 0.82},
-        {"time_s": 5.20, "alert": "HIGH DENSITY", "state": "END", "peak_density": 1.95, "hotspot_people": 8, "median_speed_bh": 0.94},
-        {"time_s": 6.80, "alert": "RUNNING", "state": "START", "peak_density": 1.45, "hotspot_people": 4, "median_speed_bh": 1.82},
-        {"time_s": 8.90, "alert": "RUNNING", "state": "END", "peak_density": 1.15, "hotspot_people": 2, "median_speed_bh": 1.05}
+        {"time_s": 7.20, "alert": "HIGH DENSITY", "state": "END", "peak_density": 1.95, "hotspot_people": 8, "median_speed_bh": 0.94},
+        {"time_s": 12.80, "alert": "RUNNING / SURGE", "state": "START", "peak_density": 1.45, "hotspot_people": 4, "median_speed_bh": 1.82},
+        {"time_s": 16.90, "alert": "RUNNING / SURGE", "state": "END", "peak_density": 1.15, "hotspot_people": 2, "median_speed_bh": 1.05}
     ]
     if cap_val < 46:
         mock_events.insert(0, {"time_s": 3.10, "alert": f"OVER CAPACITY ({46}/{cap_val})", "state": "START", "peak_density": 2.85, "hotspot_people": 46, "median_speed_bh": 0.88})
-        mock_events.append({"time_s": 7.40, "alert": f"OVER CAPACITY cleared ({22}/{cap_val})", "state": "END", "peak_density": 1.80, "hotspot_people": 22, "median_speed_bh": 0.92})
+        mock_events.append({"time_s": 18.40, "alert": f"OVER CAPACITY cleared ({22}/{cap_val})", "state": "END", "peak_density": 1.80, "hotspot_people": 22, "median_speed_bh": 0.92})
 
     # Write mock alerts CSV
     with open(alerts_csv, "w", newline="", encoding="utf-8") as f:
@@ -421,7 +452,7 @@ def run_mock_job(job: dict, params: dict):
         for ev in mock_events:
             wr.writerow([ev["time_s"], ev["alert"], ev["state"], ev["peak_density"], ev["hotspot_people"], ev["median_speed_bh"]])
     
-    # Generate realistic dynamic timeline for mock mode
+    # Generate realistic dynamic timeline for mock mode spanning full 21.2s out.mp4 duration
     duration_s = total_frames / fps
     mock_timeline = generate_fallback_timeline(46, duration_s)
 
@@ -431,6 +462,7 @@ def run_mock_job(job: dict, params: dict):
         "median_speed": 0.88,
         "risk_level": "CRITICAL" if cap_val < 46 else "MEDIUM",
         "total_ids": 58,
+        "fps": fps,
         "capacity": cap_val,
         "density_alert": density_alert_val,
         "timeline": mock_timeline,
@@ -483,15 +515,16 @@ def run_real_job(job: dict, params: dict):
         "--no-show"
     ]
     
-    # Optional parameters
-    if params.get("conf"):
-        cmd.extend(["--conf", str(params["conf"])])
+    # Effective parameters with server-level defaults
+    effective_cap = params.get("capacity") or DEFAULT_CAPACITY
+    effective_da = params.get("density_alert") or DEFAULT_DENSITY_ALERT
+    effective_conf = params.get("conf") or DEFAULT_CONF
+
+    cmd.extend(["--conf", str(effective_conf)])
+    cmd.extend(["--density-alert", str(effective_da)])
+    cmd.extend(["--capacity", str(effective_cap)])
     if params.get("imgsz"):
         cmd.extend(["--imgsz", str(params["imgsz"])])
-    if params.get("density_alert"):
-        cmd.extend(["--density-alert", str(params["density_alert"])])
-    if params.get("capacity"):
-        cmd.extend(["--capacity", str(params["capacity"])])
         
     print(f"[PIPELINE LAUNCH] Running: {' '.join(cmd)}")
     
@@ -575,14 +608,20 @@ def run_real_job(job: dict, params: dict):
         except Exception as e:
             print(f"[ALERT CSV READ ERROR]: {e}")
             
+    is_cap_breached = summary.get("max_people", 0) > effective_cap
+    risk = "CRITICAL" if is_cap_breached else summary.get("risk_level", "LOW")
+
     results = {
         "max_people": summary.get("max_people", 0),
         "peak_density": summary.get("peak_density", 0.0),
         "median_speed": summary.get("median_speed"),
-        "risk_level": summary.get("risk_level", "LOW"),
+        "risk_level": risk,
         "total_ids": summary.get("total_ids", 0),
         "timeline": summary.get("timeline", []),
         "events": events,
+        "capacity": effective_cap,
+        "density_alert": effective_da,
+        "conf": effective_conf,
         "capacity_events": [],
         "cached": False,
         "mock": False
@@ -620,6 +659,9 @@ def get_info():
         "imgsz": DEFAULT_IMGSZ,
         "device": DEVICE_STR,
         "mock": MOCK_MODE,
+        "capacity": DEFAULT_CAPACITY,
+        "density_alert": DEFAULT_DENSITY_ALERT,
+        "conf": DEFAULT_CONF,
         "status": "ONLINE",
         "api_version": "v2.0-Production"
     }
@@ -667,10 +709,14 @@ async def upload_video(
     cached_job = db_find_cached_job(sha256_hash)
     if cached_job:
         print(f"[CACHE HIT] Found matching SHA-256: {sha256_hash[:12]} from Job {cached_job['id']}")
-        # Reuse cached video file
+        # Reuse cached video file (or annotated video if in mock mode)
         cached_video_src = OUTPUTS_DIR / f"{cached_job['id']}.mp4"
         dest_video = OUTPUTS_DIR / f"{job_id}.mp4"
-        shutil.copyfile(cached_video_src, dest_video)
+        mock_source = get_mock_annotated_video() if MOCK_MODE else None
+        if mock_source and mock_source.exists():
+            shutil.copyfile(mock_source, dest_video)
+        elif cached_video_src.exists():
+            shutil.copyfile(cached_video_src, dest_video)
         
         # Copy alerts CSV if exists
         cached_alerts = OUTPUTS_DIR / f"{cached_job['id']}_alerts.csv"
@@ -812,7 +858,11 @@ async def load_sample_feed(
         print(f"[SAMPLE CACHE HIT] Reusing cached sample analysis for SHA-256: {sha256_hash[:12]}")
         cached_video_src = OUTPUTS_DIR / f"{cached_job['id']}.mp4"
         dest_video = OUTPUTS_DIR / f"{job_id}.mp4"
-        shutil.copyfile(cached_video_src, dest_video)
+        mock_source = get_mock_annotated_video() if MOCK_MODE else None
+        if mock_source and mock_source.exists():
+            shutil.copyfile(mock_source, dest_video)
+        elif cached_video_src.exists():
+            shutil.copyfile(cached_video_src, dest_video)
         
         cached_alerts = OUTPUTS_DIR / f"{cached_job['id']}_alerts.csv"
         if cached_alerts.exists():
@@ -978,6 +1028,7 @@ def get_job_results(job_id: str):
     summary_path = OUTPUTS_DIR / f"{job_id}_summary.json"
     timeline = []
     total_ids = 0
+    s_data = {}
     if summary_path.exists():
         try:
             with open(summary_path, "r", encoding="utf-8") as sf:
@@ -1000,6 +1051,9 @@ def get_job_results(job_id: str):
         "total_ids": total_ids,
         "timeline": timeline,
         "events": events,
+        "capacity": s_data.get("capacity", DEFAULT_CAPACITY),
+        "density_alert": s_data.get("density_alert", DEFAULT_DENSITY_ALERT),
+        "conf": s_data.get("conf", DEFAULT_CONF),
         "capacity_events": [],
         "cached": True,
         "mock": bool(job_data.get("mock", 0))
