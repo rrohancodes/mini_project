@@ -140,6 +140,12 @@
           <span class="material-symbols-outlined text-sm">tune</span>
           Settings
         </button>
+
+        <!-- Active Settings Pill Indicator -->
+        <button type="button" id="activeSettingsPill" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#f5ede3] hover:bg-[#ece2d6] text-mocha-accent rounded-md border border-mocha-border text-[11px] font-mono cursor-pointer transition-colors" title="Click to view or adjust threshold parameters">
+          <span class="w-1.5 h-1.5 rounded-full bg-mocha-accent"></span>
+          <span id="activeSettingsPillText">Cap: 500 | Alert: 0.66</span>
+        </button>
       </div>
 
       <!-- Active Input Status -->
@@ -222,9 +228,12 @@
             <!-- Live Video State -->
             <div id="activeStreamState" class="absolute inset-0 hidden z-10">
               <video id="resultVideo" controls playsinline class="w-full h-full object-contain bg-black"></video>
-              <div id="videoOverlayBadge" class="absolute top-3 left-3 bg-[#211a17]/90 text-white font-mono text-[11px] px-2.5 py-1 rounded border border-[#3e312b] flex items-center gap-2 pointer-events-none z-10">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span id="activeStreamLabel" class="font-sans font-medium text-xs">Annotated Topology Feed</span>
+              <div id="videoOverlayBadge" class="absolute top-3 left-3 bg-[#211a17]/95 text-white font-mono text-[11px] px-2.5 py-1.5 rounded-lg border border-[#3e312b] flex items-center gap-2 pointer-events-none z-20 shadow-lg backdrop-blur-xs">
+                <span id="videoLiveRiskDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span id="activeStreamLabel" class="font-sans font-medium text-xs">Annotated Feed</span>
+                <span class="text-[#52413a]">|</span>
+                <span class="text-[#a8998e] text-[10px] uppercase font-semibold">Risk:</span>
+                <span id="videoLiveRiskValue" class="font-bold text-emerald-400 font-mono text-xs">LOW</span>
                 <span id="cachedResultTag" class="hidden text-[#fed7aa] font-bold bg-[#432b1e] px-1.5 py-0.5 rounded text-[10px] border border-[#784323]">CACHED RESULT</span>
               </div>
               <!-- Real-Time In-Screen Headcount Overlay Badge -->
@@ -290,6 +299,10 @@
               <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1.5 font-mono">
                 <span>Density: <strong id="metricDensity" class="text-mocha-text">0.0 (sat=4.0)</strong></span>
                 <span id="metricDensityStatus" class="font-semibold text-emerald-700 font-sans">Normal</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1 font-mono">
+                <span>Threshold: <strong id="metricCapacityDisplay" class="text-mocha-text">500</strong></span>
+                <span id="metricCapacityStatus" class="font-semibold text-emerald-700 font-sans">Nominal</span>
               </div>
             </div>
             <div class="space-y-1">
@@ -679,6 +692,15 @@
     const confSlider = document.getElementById('confSlider');
     const confVal = document.getElementById('confVal');
 
+    const videoLiveRiskDot = document.getElementById('videoLiveRiskDot');
+    const videoLiveRiskValue = document.getElementById('videoLiveRiskValue');
+    const metricCapacityDisplay = document.getElementById('metricCapacityDisplay');
+    const metricCapacityStatus = document.getElementById('metricCapacityStatus');
+    const activeSettingsPill = document.getElementById('activeSettingsPill');
+    const activeSettingsPillText = document.getElementById('activeSettingsPillText');
+    const toastNotification = document.getElementById('toastNotification');
+    const toastMessage = document.getElementById('toastMessage');
+
     const historyTableBody = document.getElementById('historyTableBody');
     const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
 
@@ -695,7 +717,9 @@
       conf: 0.15
     };
 
-    // Real-Time Playback Synchronization
+    // Real-Time Playback Synchronization & Telemetry Computation
+    let animFrameId = null;
+
     function getTimelinePoint(t) {
       if (!currentTimeline || currentTimeline.length === 0) return null;
       let low = 0, high = currentTimeline.length - 1;
@@ -712,42 +736,239 @@
       return best;
     }
 
+    function runPlaybackAnimation() {
+      updatePlaybackTelemetry();
+      if (resultVideo && !resultVideo.paused && !resultVideo.ended) {
+        animFrameId = requestAnimationFrame(runPlaybackAnimation);
+      } else {
+        animFrameId = null;
+      }
+    }
+
     function updatePlaybackTelemetry() {
       if (!resultVideo) return;
       const curTime = resultVideo.currentTime || 0;
       const pt = getTimelinePoint(curTime);
+
+      let liveCount = 0;
+      let peakVal = 0.0;
+      let spdVal = 0.0;
+
       if (pt) {
-        const liveCount = pt.c !== undefined ? pt.c : (pt.count !== undefined ? pt.count : 0);
-        if (videoLiveCountValue) videoLiveCountValue.textContent = liveCount;
-        if (metricLiveHeadcount) metricLiveHeadcount.textContent = liveCount;
-        if (pt.peak !== undefined && metricDensity) {
-          const peakVal = Number(pt.peak);
-          metricDensity.textContent = `${peakVal.toFixed(2)} (sat=4.0)`;
-          const densityPct = Math.min(Math.round((peakVal / 4.0) * 100), 100);
-          if (densityBar) {
-            densityBar.style.width = `${densityPct}%`;
-            if (densityPct > 75) densityBar.className = 'h-full bg-rose-600';
-            else if (densityPct > 45) densityBar.className = 'h-full bg-amber-600';
-            else densityBar.className = 'h-full bg-mocha-accent';
-          }
-        }
-        if (pt.spd !== undefined && pt.spd !== null && metricVelocity) {
-          metricVelocity.textContent = Number(pt.spd).toFixed(2);
-          const velPct = Math.min(Math.round((Number(pt.spd) / 2.0) * 100), 100);
-          if (velocityBar) velocityBar.style.width = `${velPct}%`;
-        }
+        liveCount = pt.c !== undefined ? pt.c : (pt.count !== undefined ? pt.count : 0);
+        peakVal = pt.peak !== undefined ? Number(pt.peak) : 0.0;
+        spdVal = pt.spd !== undefined && pt.spd !== null ? Number(pt.spd) : 0.0;
       } else if (currentResults) {
-        const fallbackCount = currentResults.max_people || 0;
-        if (videoLiveCountValue) videoLiveCountValue.textContent = fallbackCount;
-        if (metricLiveHeadcount) metricLiveHeadcount.textContent = fallbackCount;
+        liveCount = currentResults.max_people || 0;
+        peakVal = currentResults.peak_density !== undefined ? Number(currentResults.peak_density) : 0.0;
+        spdVal = currentResults.median_speed !== undefined && currentResults.median_speed !== null ? Number(currentResults.median_speed) : 0.0;
+      }
+
+      // Update Headcount displays (both in-dashboard and video HUD)
+      if (videoLiveCountValue) videoLiveCountValue.textContent = liveCount;
+      if (metricLiveHeadcount) metricLiveHeadcount.textContent = liveCount;
+
+      // Real-time Capacity check against active threshold
+      const capacityThreshold = configSettings.capacity || 500;
+      const isOverCapacity = liveCount > capacityThreshold;
+      if (metricCapacityStatus) {
+        if (isOverCapacity) {
+          metricCapacityStatus.textContent = 'BREACHED';
+          metricCapacityStatus.className = 'font-bold text-rose-700 font-sans';
+        } else {
+          metricCapacityStatus.textContent = 'Nominal';
+          metricCapacityStatus.className = 'font-semibold text-emerald-700 font-sans';
+        }
+      }
+      if (metricCapacityDisplay) {
+        metricCapacityDisplay.textContent = `${capacityThreshold}`;
+        metricCapacityDisplay.className = isOverCapacity ? 'text-rose-700 font-bold' : 'text-mocha-text font-bold';
+      }
+
+      // Real-time Density evaluation
+      if (metricDensity) metricDensity.textContent = `${peakVal.toFixed(2)} (sat=4.0)`;
+      const densityPct = Math.min(Math.round((peakVal / 4.0) * 100), 100);
+      const alertRatioThresh = configSettings.densityAlert || 0.66;
+      const currentDensityRatio = peakVal / 4.0;
+
+      if (densityBar) {
+        densityBar.style.width = `${Math.max(densityPct, 4)}%`;
+        if (currentDensityRatio >= 0.90) {
+          densityBar.className = 'h-full bg-rose-600 transition-all duration-75';
+        } else if (currentDensityRatio >= alertRatioThresh) {
+          densityBar.className = 'h-full bg-amber-600 transition-all duration-75';
+        } else {
+          densityBar.className = 'h-full bg-mocha-accent transition-all duration-75';
+        }
+      }
+
+      if (metricDensityStatus) {
+        if (currentDensityRatio >= 0.90) {
+          metricDensityStatus.textContent = 'Critical';
+          metricDensityStatus.className = 'font-semibold text-rose-700 font-sans';
+        } else if (currentDensityRatio >= alertRatioThresh) {
+          metricDensityStatus.textContent = 'Elevated';
+          metricDensityStatus.className = 'font-semibold text-amber-700 font-sans';
+        } else {
+          metricDensityStatus.textContent = 'Normal';
+          metricDensityStatus.className = 'font-semibold text-emerald-700 font-sans';
+        }
+      }
+
+      // Real-time Velocity evaluation
+      if (metricVelocity) metricVelocity.textContent = spdVal.toFixed(2);
+      const velPct = Math.min(Math.round((spdVal / 2.0) * 100), 100);
+      if (velocityBar) velocityBar.style.width = `${Math.max(velPct, 4)}%`;
+
+      // Active Incident / Event matching at curTime
+      const allEvents = (currentResults && currentResults.events) ? currentResults.events : [];
+      const activeEvent = allEvents.find(e => e.state === 'START' && Math.abs(curTime - e.time_s) <= 2.5);
+
+      // Determine Live Dynamic Risk Level (LOW, MEDIUM, HIGH, CRITICAL)
+      let liveRisk = 'LOW';
+      if (isOverCapacity || currentDensityRatio >= 0.90 || (activeEvent && (activeEvent.alert.includes('HIGH DENSITY') || activeEvent.alert.includes('CRITICAL')))) {
+        liveRisk = 'CRITICAL';
+      } else if (currentDensityRatio >= alertRatioThresh || spdVal > 1.5 || (activeEvent && activeEvent.alert.includes('SURGE'))) {
+        liveRisk = 'HIGH';
+      } else if (currentDensityRatio >= 0.40 || (spdVal < 0.15 && peakVal > 1.0) || (activeEvent && activeEvent.alert.includes('STALLED'))) {
+        liveRisk = 'MEDIUM';
+      } else {
+        liveRisk = 'LOW';
+      }
+
+      // Card 3: Compression Risk Live Updates
+      if (metricRisk) {
+        metricRisk.textContent = liveRisk;
+        if (liveRisk === 'CRITICAL') {
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-rose-700 font-mono';
+        } else if (liveRisk === 'HIGH') {
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-amber-700 font-mono';
+        } else if (liveRisk === 'MEDIUM') {
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-amber-600 font-mono';
+        } else {
+          metricRisk.className = 'text-3xl sm:text-4xl font-bold tracking-tight text-emerald-700 font-mono';
+        }
+      }
+      if (metricRiskIndex) {
+        metricRiskIndex.textContent = `RATIO: ${currentDensityRatio.toFixed(2)}`;
+      }
+      if (riskBadgeStatus) {
+        if (liveRisk === 'CRITICAL') {
+          riskBadgeStatus.textContent = 'Critical';
+          riskBadgeStatus.className = 'font-semibold text-rose-700 font-sans';
+        } else if (liveRisk === 'HIGH') {
+          riskBadgeStatus.textContent = 'Warning';
+          riskBadgeStatus.className = 'font-semibold text-amber-700 font-sans';
+        } else if (liveRisk === 'MEDIUM') {
+          riskBadgeStatus.textContent = 'Caution';
+          riskBadgeStatus.className = 'font-semibold text-amber-600 font-sans';
+        } else {
+          riskBadgeStatus.textContent = 'Safe';
+          riskBadgeStatus.className = 'font-semibold text-emerald-700 font-sans';
+        }
+      }
+      if (riskBar) {
+        if (liveRisk === 'CRITICAL') {
+          riskBar.style.width = '100%';
+          riskBar.className = 'h-full bg-rose-600 transition-all duration-100';
+        } else if (liveRisk === 'HIGH') {
+          riskBar.style.width = '75%';
+          riskBar.className = 'h-full bg-amber-600 transition-all duration-100';
+        } else if (liveRisk === 'MEDIUM') {
+          riskBar.style.width = '50%';
+          riskBar.className = 'h-full bg-amber-500 transition-all duration-100';
+        } else {
+          riskBar.style.width = '25%';
+          riskBar.className = 'h-full bg-emerald-600 transition-all duration-100';
+        }
+      }
+
+      // In-Video HUD Badge Live Updates
+      if (videoLiveRiskValue) {
+        videoLiveRiskValue.textContent = liveRisk;
+        if (liveRisk === 'CRITICAL') {
+          videoLiveRiskValue.className = 'font-bold text-rose-400 font-mono text-xs';
+        } else if (liveRisk === 'HIGH') {
+          videoLiveRiskValue.className = 'font-bold text-amber-400 font-mono text-xs';
+        } else if (liveRisk === 'MEDIUM') {
+          videoLiveRiskValue.className = 'font-bold text-amber-300 font-mono text-xs';
+        } else {
+          videoLiveRiskValue.className = 'font-bold text-emerald-400 font-mono text-xs';
+        }
+      }
+      if (videoLiveRiskDot) {
+        if (liveRisk === 'CRITICAL') {
+          videoLiveRiskDot.className = 'w-2 h-2 rounded-full bg-rose-500 animate-ping';
+        } else if (liveRisk === 'HIGH') {
+          videoLiveRiskDot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        } else if (liveRisk === 'MEDIUM') {
+          videoLiveRiskDot.className = 'w-2 h-2 rounded-full bg-amber-300';
+        } else {
+          videoLiveRiskDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        }
+      }
+
+      // Dynamic Alert Box update
+      if (alertStatusBox) {
+        if (isOverCapacity) {
+          alertStatusBox.className = 'p-3 bg-rose-50 border border-rose-200 rounded-md flex items-start gap-2.5';
+          alertStatusBox.innerHTML = `
+            <div class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-xs">warning</span>
+            </div>
+            <div class="space-y-0.5">
+              <span class="text-xs font-semibold text-rose-950 block leading-tight">ACTIVE ALERT: OVER CAPACITY (${liveCount} / ${capacityThreshold})</span>
+              <span class="text-[11px] text-rose-700 font-mono block">Venue threshold exceeded by ${liveCount - capacityThreshold} persons</span>
+            </div>
+          `;
+        } else if (activeEvent) {
+          alertStatusBox.className = 'p-3 bg-rose-50 border border-rose-200 rounded-md flex items-start gap-2.5';
+          alertStatusBox.innerHTML = `
+            <div class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-xs">warning</span>
+            </div>
+            <div class="space-y-0.5">
+              <span class="text-xs font-semibold text-rose-950 block leading-tight">ACTIVE ALERT: ${activeEvent.alert} (T+${activeEvent.time_s}s)</span>
+              <span class="text-[11px] text-rose-700 font-mono block">Peak: ${activeEvent.peak_density || peakVal} p/m² | Spd: ${activeEvent.median_speed_bh || spdVal} bh/s</span>
+            </div>
+          `;
+        } else {
+          alertStatusBox.className = 'p-3 bg-emerald-50/80 border border-emerald-200 rounded-md flex items-start gap-2.5';
+          alertStatusBox.innerHTML = `
+            <div class="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+              <span class="material-symbols-outlined text-xs">check</span>
+            </div>
+            <div class="space-y-0.5">
+              <span class="text-xs font-medium text-emerald-950 block leading-tight">No anomalous crowd compression or stalls detected.</span>
+              <span class="text-[11px] text-emerald-700 font-mono block">Status: Nominal Sweep</span>
+            </div>
+          `;
+        }
       }
     }
 
     if (resultVideo) {
+      resultVideo.addEventListener('play', () => {
+        if (animFrameId) cancelAnimationFrame(animFrameId);
+        animFrameId = requestAnimationFrame(runPlaybackAnimation);
+      });
+      resultVideo.addEventListener('pause', () => {
+        if (animFrameId) {
+          cancelAnimationFrame(animFrameId);
+          animFrameId = null;
+        }
+        updatePlaybackTelemetry();
+      });
+      resultVideo.addEventListener('ended', () => {
+        if (animFrameId) {
+          cancelAnimationFrame(animFrameId);
+          animFrameId = null;
+        }
+        updatePlaybackTelemetry();
+      });
       resultVideo.addEventListener('timeupdate', updatePlaybackTelemetry);
       resultVideo.addEventListener('seeked', updatePlaybackTelemetry);
-      resultVideo.addEventListener('play', updatePlaybackTelemetry);
-      resultVideo.addEventListener('pause', updatePlaybackTelemetry);
+      resultVideo.addEventListener('seeking', updatePlaybackTelemetry);
     }
 
     // Boot Server Info
@@ -919,16 +1140,24 @@
 
     async function loadSampleFeed() {
       setPipelineBusy(true);
-      showProcessingUI('Ingesting Sample', 15, 'Loading test.mp4 demonstration feed from server...', 'SAMPLE', 'Initializing', '--');
+      showProcessingUI('Ingesting Sample', 15, `Loading test.mp4 demonstration feed (Cap: ${configSettings.capacity}, Alert: ${configSettings.densityAlert.toFixed(2)})...`, 'SAMPLE', 'Initializing', '--');
       try {
-        const res = await fetch('/api/sample', { method: 'POST' });
+        const res = await fetch('/api/sample', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            capacity: configSettings.capacity,
+            density_alert: configSettings.densityAlert,
+            conf: configSettings.conf
+          })
+        });
         if (!res.ok) {
           const err = await res.json();
           throw new Error(err.detail || 'Sample feed request failed');
         }
         const data = await res.json();
         currentJobId = data.job_id;
-        if (metaInputText) metaInputText.textContent = 'Demonstration Feed: test.mp4';
+        if (metaInputText) metaInputText.textContent = `Demonstration Feed: test.mp4 (Cap: ${configSettings.capacity})`;
 
         if (data.cached) {
           onJobCompleted(data.job_id, true);
@@ -1132,9 +1361,15 @@
           eventLogContainer.innerHTML = html;
         }
       }
+
+      updatePlaybackTelemetry();
     }
 
     function flushPipeline() {
+      if (animFrameId) {
+        cancelAnimationFrame(animFrameId);
+        animFrameId = null;
+      }
       stopPolling();
       setPipelineBusy(false);
       currentJobId = null;
@@ -1162,6 +1397,21 @@
       if (metricDensityStatus) {
         metricDensityStatus.textContent = 'Normal';
         metricDensityStatus.className = 'font-semibold text-emerald-700 font-sans';
+      }
+      if (metricCapacityStatus) {
+        metricCapacityStatus.textContent = 'Nominal';
+        metricCapacityStatus.className = 'font-semibold text-emerald-700 font-sans';
+      }
+      if (metricCapacityDisplay) {
+        metricCapacityDisplay.textContent = `${configSettings.capacity || 500}`;
+        metricCapacityDisplay.className = 'text-mocha-text font-bold';
+      }
+      if (videoLiveRiskValue) {
+        videoLiveRiskValue.textContent = 'LOW';
+        videoLiveRiskValue.className = 'font-bold text-emerald-400 font-mono text-xs';
+      }
+      if (videoLiveRiskDot) {
+        videoLiveRiskDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
       }
       if (metricVelocity) metricVelocity.textContent = '0.00';
       if (velocityFpsTag) velocityFpsTag.textContent = 'FPS: --';
@@ -1275,13 +1525,69 @@
 
     if (errorRetryBtn) errorRetryBtn.addEventListener('click', flushPipeline);
 
-    // Modal Controls
+    // Toast Notification Manager
+    let toastTimer = null;
+    function showToast(message, isError = false) {
+      if (!toastNotification || !toastMessage) return;
+      toastMessage.textContent = message;
+      const icon = toastNotification.querySelector('.material-symbols-outlined');
+      if (icon) {
+        icon.textContent = isError ? 'warning' : 'check_circle';
+        icon.className = isError ? 'material-symbols-outlined text-rose-400 text-lg' : 'material-symbols-outlined text-[#e2a88e] text-lg';
+      }
+      toastNotification.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+      toastNotification.classList.add('translate-y-0', 'opacity-100');
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toastNotification.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+        toastNotification.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+
+    // Modal & Threshold Configuration Controls
+    function updateSettingsPillUI() {
+      if (activeSettingsPillText) {
+        activeSettingsPillText.textContent = `Cap: ${configSettings.capacity} | Alert: ${configSettings.densityAlert.toFixed(2)}`;
+      }
+      if (metricCapacityDisplay) {
+        metricCapacityDisplay.textContent = `${configSettings.capacity}`;
+      }
+    }
+
+    function loadStoredSettings() {
+      try {
+        const raw = localStorage.getItem('crowd_density_config');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.capacity && Number.isInteger(parsed.capacity)) configSettings.capacity = parsed.capacity;
+          if (parsed.densityAlert && !isNaN(parsed.densityAlert)) configSettings.densityAlert = parseFloat(parsed.densityAlert);
+          if (parsed.conf && !isNaN(parsed.conf)) configSettings.conf = parseFloat(parsed.conf);
+        }
+      } catch (e) {
+        console.warn('Unable to load stored settings:', e);
+      }
+      updateSettingsPillUI();
+    }
+
     function openModal() {
+      if (densityThresholdSlider) {
+        densityThresholdSlider.value = configSettings.densityAlert;
+        if (densitySliderVal) densitySliderVal.textContent = configSettings.densityAlert.toFixed(2);
+      }
+      if (capacityInput) {
+        capacityInput.value = configSettings.capacity;
+        if (capacityVal) capacityVal.textContent = `${configSettings.capacity} Persons`;
+      }
+      if (confSlider) {
+        confSlider.value = configSettings.conf;
+        if (confVal) confVal.textContent = configSettings.conf.toFixed(2);
+      }
       if (configModal) {
         configModal.classList.remove('hidden');
         configModal.classList.add('flex');
       }
     }
+
     function closeModal() {
       if (configModal) {
         configModal.classList.add('hidden');
@@ -1290,14 +1596,31 @@
     }
 
     if (openConfigModalBtn) openConfigModalBtn.addEventListener('click', openModal);
+    if (activeSettingsPill) activeSettingsPill.addEventListener('click', openModal);
     if (closeConfigModalBtn) closeConfigModalBtn.addEventListener('click', closeModal);
     if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeModal);
     if (saveModalBtn) {
       saveModalBtn.addEventListener('click', function() {
-        if (densityThresholdSlider) configSettings.densityAlert = parseFloat(densityThresholdSlider.value);
-        if (capacityInput) configSettings.capacity = parseInt(capacityInput.value) || 500;
-        if (confSlider) configSettings.conf = parseFloat(confSlider.value) || 0.15;
+        if (densityThresholdSlider) {
+          const d = parseFloat(densityThresholdSlider.value);
+          if (!isNaN(d)) configSettings.densityAlert = Math.round(d * 100) / 100;
+        }
+        if (capacityInput) {
+          const c = parseInt(capacityInput.value, 10);
+          if (!isNaN(c) && c > 0) configSettings.capacity = c;
+        }
+        if (confSlider) {
+          const cf = parseFloat(confSlider.value);
+          if (!isNaN(cf)) configSettings.conf = Math.round(cf * 100) / 100;
+        }
+        try {
+          localStorage.setItem('crowd_density_config', JSON.stringify(configSettings));
+        } catch (e) {}
+
+        updateSettingsPillUI();
         closeModal();
+        updatePlaybackTelemetry();
+        showToast(`Parameters applied: Cap ${configSettings.capacity}, Alert ${configSettings.densityAlert.toFixed(2)}, Conf ${configSettings.conf.toFixed(2)}`);
       });
     }
 
@@ -1322,8 +1645,14 @@
     window.flushPipeline = flushPipeline;
     window.onJobCompleted = onJobCompleted;
 
+    loadStoredSettings();
     bootServerInfo();
   })();
   </script>
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 bg-[#211a17] text-white px-4 py-3 rounded-lg shadow-2xl border border-mocha-accent text-xs font-medium flex items-center gap-2.5 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300">
+    <span class="material-symbols-outlined text-[#e2a88e] text-lg">check_circle</span>
+    <span id="toastMessage">Parameters successfully applied.</span>
+  </div>
 </body>
 </html>

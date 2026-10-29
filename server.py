@@ -372,6 +372,8 @@ def run_mock_job(job: dict, params: dict):
     
     total_frames = 240
     fps = 26.5
+    cap_val = params.get("capacity", 500)
+    density_alert_val = params.get("density_alert", 0.66)
     
     # Simulate progress over ~10 seconds
     for step in range(1, 101):
@@ -401,14 +403,23 @@ def run_mock_job(job: dict, params: dict):
     if not success or not final_video.exists():
         shutil.copyfile(upload_path, final_video)
     
+    # Build events list respecting parameters
+    mock_events = [
+        {"time_s": 2.40, "alert": "HIGH DENSITY", "state": "START", "peak_density": 2.85, "hotspot_people": 14, "median_speed_bh": 0.82},
+        {"time_s": 5.20, "alert": "HIGH DENSITY", "state": "END", "peak_density": 1.95, "hotspot_people": 8, "median_speed_bh": 0.94},
+        {"time_s": 6.80, "alert": "RUNNING", "state": "START", "peak_density": 1.45, "hotspot_people": 4, "median_speed_bh": 1.82},
+        {"time_s": 8.90, "alert": "RUNNING", "state": "END", "peak_density": 1.15, "hotspot_people": 2, "median_speed_bh": 1.05}
+    ]
+    if cap_val < 46:
+        mock_events.insert(0, {"time_s": 3.10, "alert": f"OVER CAPACITY ({46}/{cap_val})", "state": "START", "peak_density": 2.85, "hotspot_people": 46, "median_speed_bh": 0.88})
+        mock_events.append({"time_s": 7.40, "alert": f"OVER CAPACITY cleared ({22}/{cap_val})", "state": "END", "peak_density": 1.80, "hotspot_people": 22, "median_speed_bh": 0.92})
+
     # Write mock alerts CSV
     with open(alerts_csv, "w", newline="", encoding="utf-8") as f:
         wr = csv.writer(f)
         wr.writerow(["time_s", "alert", "state", "peak_density", "hotspot_people", "median_speed_bh"])
-        wr.writerow([2.40, "HIGH DENSITY", "START", 2.85, 14, 0.82])
-        wr.writerow([5.20, "HIGH DENSITY", "END", 1.95, 8, 0.94])
-        wr.writerow([6.80, "RUNNING", "START", 1.45, 4, 1.82])
-        wr.writerow([8.90, "RUNNING", "END", 1.15, 2, 1.05])
+        for ev in mock_events:
+            wr.writerow([ev["time_s"], ev["alert"], ev["state"], ev["peak_density"], ev["hotspot_people"], ev["median_speed_bh"]])
     
     # Generate realistic dynamic timeline for mock mode
     duration_s = total_frames / fps
@@ -418,15 +429,12 @@ def run_mock_job(job: dict, params: dict):
         "max_people": 46,
         "peak_density": 2.85,
         "median_speed": 0.88,
-        "risk_level": "MEDIUM",
+        "risk_level": "CRITICAL" if cap_val < 46 else "MEDIUM",
         "total_ids": 58,
+        "capacity": cap_val,
+        "density_alert": density_alert_val,
         "timeline": mock_timeline,
-        "events": [
-            {"time_s": 2.40, "alert": "HIGH DENSITY", "state": "START", "peak_density": 2.85, "hotspot_people": 14, "median_speed_bh": 0.82},
-            {"time_s": 5.20, "alert": "HIGH DENSITY", "state": "END", "peak_density": 1.95, "hotspot_people": 8, "median_speed_bh": 0.94},
-            {"time_s": 6.80, "alert": "RUNNING", "state": "START", "peak_density": 1.45, "hotspot_people": 4, "median_speed_bh": 1.82},
-            {"time_s": 8.90, "alert": "RUNNING", "state": "END", "peak_density": 1.15, "hotspot_people": 2, "median_speed_bh": 1.05}
-        ],
+        "events": mock_events,
         "capacity_events": [],
         "cached": False,
         "mock": True
@@ -647,7 +655,13 @@ async def upload_video(
                 raise HTTPException(status_code=413, detail="File payload exceeds 100MB regulatory threshold.")
             buffer.write(chunk)
             
-    sha256_hash = compute_sha256(saved_upload)
+    raw_hash = compute_sha256(saved_upload)
+    is_custom_thresholds = (capacity is not None and capacity != 500) or (density_alert is not None and density_alert != 0.66) or (conf is not None and conf != 0.15)
+    if is_custom_thresholds:
+        param_tag = f"_cap{capacity or 500}_da{density_alert or 0.66}_conf{conf or 0.15}"
+        sha256_hash = hashlib.sha256((raw_hash + param_tag).encode("utf-8")).hexdigest()
+    else:
+        sha256_hash = raw_hash
     
     # Check SHA-256 cache
     cached_job = db_find_cached_job(sha256_hash)
@@ -747,20 +761,51 @@ async def upload_video(
     return {"job_id": job_id, "cached": False}
 
 @app.post("/api/sample")
-def load_sample_feed():
-    """Queues a job using the bundled test.mp4 demonstration video."""
+async def load_sample_feed(
+    request: Request,
+    capacity: Optional[int] = None,
+    conf: Optional[float] = None,
+    density_alert: Optional[float] = None
+):
+    """Queues a job using the bundled test.mp4 demonstration video, respecting custom threshold parameters."""
     sample_file = BASE_DIR / "test.mp4"
     if not sample_file.exists():
         sample_file = BASE_DIR / "mini_project-main" / "mini_project-main" / "test.mp4"
     
     if not sample_file.exists():
         raise HTTPException(status_code=404, detail="Demonstration sample video 'test.mp4' not found in workspace.")
+
+    # Try reading from form data or JSON if not passed as query params
+    if capacity is None or conf is None or density_alert is None:
+        try:
+            content_type = request.headers.get("content-type", "")
+            if "application/json" in content_type:
+                body = await request.json()
+                if capacity is None and "capacity" in body: capacity = int(body["capacity"])
+                if conf is None and "conf" in body: conf = float(body["conf"])
+                if density_alert is None and "density_alert" in body: density_alert = float(body["density_alert"])
+            elif "form" in content_type:
+                form = await request.form()
+                if capacity is None and "capacity" in form: capacity = int(form["capacity"])
+                if conf is None and "conf" in form: conf = float(form["conf"])
+                if density_alert is None and "density_alert" in form: density_alert = float(form["density_alert"])
+        except Exception:
+            pass
         
     job_id = uuid.uuid4().hex[:12]
     saved_upload = UPLOADS_DIR / f"{job_id}.mp4"
     shutil.copyfile(sample_file, saved_upload)
     
-    sha256_hash = compute_sha256(saved_upload)
+    # Check if parameters differ from default (capacity=500, conf=0.15, density_alert=0.66)
+    is_custom_thresholds = (capacity is not None and capacity != 500) or (density_alert is not None and density_alert != 0.66) or (conf is not None and conf != 0.15)
+    
+    raw_hash = compute_sha256(saved_upload)
+    if is_custom_thresholds:
+        param_tag = f"_cap{capacity or 500}_da{density_alert or 0.66}_conf{conf or 0.15}"
+        sha256_hash = hashlib.sha256((raw_hash + param_tag).encode("utf-8")).hexdigest()
+    else:
+        sha256_hash = raw_hash
+
     cached_job = db_find_cached_job(sha256_hash)
     
     if cached_job:
@@ -796,6 +841,8 @@ def load_sample_feed():
             "timeline": cached_timeline,
             "events": cached_job.get("events", []),
             "capacity_events": [],
+            "capacity": capacity or 500,
+            "density_alert": density_alert or 0.66,
             "cached": True,
             "mock": bool(cached_job.get("mock", 0))
         }
@@ -845,7 +892,12 @@ def load_sample_feed():
     JOBS[job_id] = job_state
     db_insert_job(job_state)
     
-    job_queue.put({"id": job_id, "params": {}})
+    params = {}
+    if capacity is not None: params["capacity"] = capacity
+    if conf is not None: params["conf"] = conf
+    if density_alert is not None: params["density_alert"] = density_alert
+    
+    job_queue.put({"id": job_id, "params": params})
     return {"job_id": job_id, "cached": False}
 
 @app.get("/api/jobs/{job_id}")
