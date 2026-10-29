@@ -227,6 +227,13 @@
                 <span id="activeStreamLabel" class="font-sans font-medium text-xs">Annotated Topology Feed</span>
                 <span id="cachedResultTag" class="hidden text-[#fed7aa] font-bold bg-[#432b1e] px-1.5 py-0.5 rounded text-[10px] border border-[#784323]">CACHED RESULT</span>
               </div>
+              <!-- Real-Time In-Screen Headcount Overlay Badge -->
+              <div id="videoLiveCountBadge" class="absolute top-3 right-3 bg-[#1e1713]/90 text-white font-mono text-xs px-3.5 py-1.5 rounded-lg border border-[#e2a88e]/70 flex items-center gap-2 pointer-events-none z-20 shadow-lg backdrop-blur-xs">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-[#e2a88e] text-[11px] font-sans font-semibold uppercase tracking-wider">Currently In Screen:</span>
+                <span id="videoLiveCountValue" class="text-base font-bold font-mono text-white tabular-nums">0</span>
+                <span class="text-[#a8998e] text-[11px]">people</span>
+              </div>
             </div>
 
           </div>
@@ -254,23 +261,33 @@
         <!-- 3 LIVE TELEMETRY METRIC CARDS -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
-          <!-- Card 1: Estimated Headcount -->
+          <!-- Card 1: Estimated Headcount (Live In-Screen + Summary) -->
           <div class="bg-mocha-card border border-mocha-border rounded-lg p-4 shadow-[0_1px_4px_rgba(45,35,30,0.03)] flex flex-col justify-between">
             <div class="flex items-start justify-between">
               <div>
-                <span class="text-xs font-semibold text-mocha-subtext uppercase tracking-wider block">Peak Headcount</span>
-                <span class="text-[11px] text-mocha-muted">YOLOv8 Detection</span>
+                <span class="text-xs font-semibold text-mocha-subtext uppercase tracking-wider block">People In Screen</span>
+                <span class="text-[11px] text-mocha-muted">Real-Time Optical Detection</span>
               </div>
-              <div class="w-8 h-8 rounded-md bg-mocha-accentLight text-mocha-accent flex items-center justify-center">
-                <span class="material-symbols-outlined text-lg">groups</span>
+              <div class="flex items-center gap-1.5">
+                <span class="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  LIVE
+                </span>
+                <div class="w-8 h-8 rounded-md bg-mocha-accentLight text-mocha-accent flex items-center justify-center">
+                  <span class="material-symbols-outlined text-lg">groups</span>
+                </div>
               </div>
             </div>
             <div class="my-3">
               <div class="flex items-baseline gap-2">
-                <span id="metricHeadcount" class="text-3xl sm:text-4xl font-bold tracking-tight text-mocha-text font-mono tabular-nums">0</span>
-                <span class="text-xs text-mocha-subtext font-medium">persons</span>
+                <span id="metricLiveHeadcount" class="text-3xl sm:text-4xl font-bold tracking-tight text-mocha-accent font-mono tabular-nums">0</span>
+                <span class="text-xs text-mocha-subtext font-medium">people on screen now</span>
               </div>
-              <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1 font-mono">
+              <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-mocha-border/60 text-[11px] font-mono text-mocha-subtext">
+                <div>Peak in Video: <strong id="metricHeadcount" class="text-mocha-text">0</strong></div>
+                <div>Total IDs Seen: <strong id="metricTotalIds" class="text-mocha-text">0</strong></div>
+              </div>
+              <div class="flex items-center justify-between text-xs text-mocha-subtext mt-1.5 font-mono">
                 <span>Density: <strong id="metricDensity" class="text-mocha-text">0.0 (sat=4.0)</strong></span>
                 <span id="metricDensityStatus" class="font-semibold text-emerald-700 font-sans">Normal</span>
               </div>
@@ -618,6 +635,10 @@
     const errorMessage = document.getElementById('errorMessage');
     const errorRetryBtn = document.getElementById('errorRetryBtn');
 
+    const videoLiveCountBadge = document.getElementById('videoLiveCountBadge');
+    const videoLiveCountValue = document.getElementById('videoLiveCountValue');
+    const metricLiveHeadcount = document.getElementById('metricLiveHeadcount');
+    const metricTotalIds = document.getElementById('metricTotalIds');
     const metricHeadcount = document.getElementById('metricHeadcount');
     const metricDensity = document.getElementById('metricDensity');
     const metricDensityStatus = document.getElementById('metricDensityStatus');
@@ -666,11 +687,68 @@
     let pollTimer = null;
     let isJobRunning = false;
     let runtimeInfo = { mock: false, model: '', device: '' };
+    let currentTimeline = [];
+    let currentResults = null;
     let configSettings = {
       densityAlert: 0.66,
       capacity: 500,
       conf: 0.15
     };
+
+    // Real-Time Playback Synchronization
+    function getTimelinePoint(t) {
+      if (!currentTimeline || currentTimeline.length === 0) return null;
+      let low = 0, high = currentTimeline.length - 1;
+      let best = currentTimeline[0];
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (currentTimeline[mid].t <= t) {
+          best = currentTimeline[mid];
+          low = mid + 1;
+        } else {
+          high = mid - 1;
+        }
+      }
+      return best;
+    }
+
+    function updatePlaybackTelemetry() {
+      if (!resultVideo) return;
+      const curTime = resultVideo.currentTime || 0;
+      const pt = getTimelinePoint(curTime);
+      if (pt) {
+        const liveCount = pt.c !== undefined ? pt.c : (pt.count !== undefined ? pt.count : 0);
+        if (videoLiveCountValue) videoLiveCountValue.textContent = liveCount;
+        if (metricLiveHeadcount) metricLiveHeadcount.textContent = liveCount;
+        if (pt.peak !== undefined && metricDensity) {
+          const peakVal = Number(pt.peak);
+          metricDensity.textContent = `${peakVal.toFixed(2)} (sat=4.0)`;
+          const densityPct = Math.min(Math.round((peakVal / 4.0) * 100), 100);
+          if (densityBar) {
+            densityBar.style.width = `${densityPct}%`;
+            if (densityPct > 75) densityBar.className = 'h-full bg-rose-600';
+            else if (densityPct > 45) densityBar.className = 'h-full bg-amber-600';
+            else densityBar.className = 'h-full bg-mocha-accent';
+          }
+        }
+        if (pt.spd !== undefined && pt.spd !== null && metricVelocity) {
+          metricVelocity.textContent = Number(pt.spd).toFixed(2);
+          const velPct = Math.min(Math.round((Number(pt.spd) / 2.0) * 100), 100);
+          if (velocityBar) velocityBar.style.width = `${velPct}%`;
+        }
+      } else if (currentResults) {
+        const fallbackCount = currentResults.max_people || 0;
+        if (videoLiveCountValue) videoLiveCountValue.textContent = fallbackCount;
+        if (metricLiveHeadcount) metricLiveHeadcount.textContent = fallbackCount;
+      }
+    }
+
+    if (resultVideo) {
+      resultVideo.addEventListener('timeupdate', updatePlaybackTelemetry);
+      resultVideo.addEventListener('seeked', updatePlaybackTelemetry);
+      resultVideo.addEventListener('play', updatePlaybackTelemetry);
+      resultVideo.addEventListener('pause', updatePlaybackTelemetry);
+    }
 
     // Boot Server Info
     async function bootServerInfo() {
@@ -909,14 +987,23 @@
     }
 
     function fillTelemetryMetrics(results) {
+      currentResults = results;
+      currentTimeline = results.timeline || [];
       const maxPeople = results.max_people !== undefined ? results.max_people : 0;
+      const totalIds = results.total_ids !== undefined ? results.total_ids : 0;
       const peakDensity = results.peak_density !== undefined ? results.peak_density : 0.0;
       const medSpeed = results.median_speed !== null && results.median_speed !== undefined ? Number(results.median_speed).toFixed(2) : '--';
       const risk = results.risk_level || 'LOW';
       const events = results.events || [];
 
-      // Tile 1: Headcount
+      // Tile 1: Headcount (Live In-Screen + Summary Metrics)
       if (metricHeadcount) metricHeadcount.textContent = maxPeople;
+      if (metricTotalIds) metricTotalIds.textContent = totalIds;
+      if (metricLiveHeadcount) {
+        const initCount = currentTimeline.length > 0 ? (currentTimeline[0].c !== undefined ? currentTimeline[0].c : currentTimeline[0].count) : maxPeople;
+        metricLiveHeadcount.textContent = initCount;
+        if (videoLiveCountValue) videoLiveCountValue.textContent = initCount;
+      }
       if (metricDensity) metricDensity.textContent = `${peakDensity.toFixed(2)} (sat=4.0)`;
       
       const densityPct = Math.min(Math.round((peakDensity / 4.0) * 100), 100);
@@ -1051,6 +1138,8 @@
       stopPolling();
       setPipelineBusy(false);
       currentJobId = null;
+      currentTimeline = [];
+      currentResults = null;
 
       if (resultVideo) {
         resultVideo.pause();
@@ -1064,6 +1153,9 @@
       if (errorPanel) errorPanel.classList.add('hidden');
       if (downloadActionPanel) downloadActionPanel.classList.add('hidden');
 
+      if (videoLiveCountValue) videoLiveCountValue.textContent = '0';
+      if (metricLiveHeadcount) metricLiveHeadcount.textContent = '0';
+      if (metricTotalIds) metricTotalIds.textContent = '0';
       if (metricHeadcount) metricHeadcount.textContent = '0';
       if (metricDensity) metricDensity.textContent = '0.0 (sat=4.0)';
       if (densityBar) { densityBar.style.width = '4%'; densityBar.className = 'h-full bg-mocha-accent'; }

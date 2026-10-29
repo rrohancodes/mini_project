@@ -56,21 +56,42 @@ def draw_hud(frame, count, total, peak, fps, sat, k, med_speed, capacity=None):
     name, color = risk_level(peak, sat)
     t = max(int(k), 1)
     speed_text = "--" if med_speed is None else f"{med_speed:.2f} bh/s"
-    cv2.rectangle(frame, (int(10 * k), int(10 * k)), (int(300 * k), int(150 * k)), (0, 0, 0), -1)
-    cv2.rectangle(frame, (int(10 * k), int(10 * k)), (int(300 * k), int(150 * k)), color, t + 1)
+    
+    # 1. Main Telemetry HUD Card (Top-Left)
+    card_w = int(340 * k)
+    card_h = int(160 * k)
+    cv2.rectangle(frame, (int(10 * k), int(10 * k)), (int(10 * k) + card_w, int(10 * k) + card_h), (0, 0, 0), -1)
+    cv2.rectangle(frame, (int(10 * k), int(10 * k)), (int(10 * k) + card_w, int(10 * k) + card_h), color, t + 1)
     cap_txt = f"/{capacity}" if capacity is not None else ""
     lines = [
-        (f"People now: {count}{cap_txt}", 0.65, (255, 255, 255), 2),
-        (f"Total IDs seen: {total}", 0.55, (200, 200, 200), 1),
-        (f"Peak density: {peak:.1f}", 0.55, (200, 200, 200), 1),
-        (f"Median speed: {speed_text}", 0.55, (200, 200, 200), 1),
-        (f"Risk: {name}", 0.65, color, 2),
+        (f"PEOPLE IN SCREEN: {count}{cap_txt}", 0.68, (0, 255, 255), 2),
+        (f"Cumulative IDs seen: {total}", 0.52, (200, 200, 200), 1),
+        (f"Peak density: {peak:.1f}", 0.52, (200, 200, 200), 1),
+        (f"Median speed: {speed_text}", 0.52, (200, 200, 200), 1),
+        (f"Risk level: {name}", 0.65, color, 2),
     ]
     y = 38
     for text, size, col, th in lines:
         cv2.putText(frame, text, (int(20 * k), int(y * k)), FONT, size * k, col, th * t)
         y += 24
-    cv2.putText(frame, f"{fps:.1f} FPS", (frame.shape[1] - int(120 * k), int(28 * k)), FONT, 0.6 * k, (255, 255, 255), 2 * t)
+
+    # 2. Prominent Live Headcount Banner (Top-Right)
+    w = frame.shape[1]
+    banner_txt = f"CURRENT IN SCREEN: {count} PEOPLE"
+    (btw, bth), _ = cv2.getTextSize(banner_txt, FONT, 0.75 * k, 2 * t)
+    bx2 = w - int(20 * k)
+    bx1 = bx2 - btw - int(30 * k)
+    by1 = int(10 * k)
+    by2 = by1 + bth + int(20 * k)
+    
+    cv2.rectangle(frame, (bx1, by1), (bx2, by2), (20, 16, 14), -1)
+    cv2.rectangle(frame, (bx1, by1), (bx2, by2), (0, 255, 255), max(t, 1))
+    cv2.putText(frame, banner_txt, (bx1 + int(15 * k), by2 - int(8 * k)), FONT, 0.75 * k, (0, 255, 255), 2 * t)
+
+    # 3. FPS display right below live banner
+    fps_text = f"{fps:.1f} FPS"
+    (ftw, _), _ = cv2.getTextSize(fps_text, FONT, 0.55 * k, t)
+    cv2.putText(frame, fps_text, (bx2 - ftw, by2 + int(20 * k)), FONT, 0.55 * k, (220, 220, 220), t)
 
 
 def draw_alerts(frame, active, k, blink):
@@ -219,6 +240,7 @@ def main():
     highest_risk_rank = 0  # [PHASE2]
     risk_rank_map = {"LOW": 1, "MEDIUM": 2, "HIGH": 3, "CRITICAL": 4}  # [PHASE2]
     highest_risk_name = "LOW"  # [PHASE2]
+    timeline = []  # [PHASE2] Per-frame telemetry for real-time dashboard sync
 
     while True:
         ok, frame = cap.read()
@@ -275,19 +297,27 @@ def main():
         for i, (x1, y1, x2, y2, tid) in enumerate(boxes_out):
             cx, cy, bh = people[i]
             cv2.rectangle(out, (x1, y1), (x2, y2), (255, 255, 255), t)
-            if tid is None:
-                continue
-            speed_px = track_speed(history[tid], src_fps, args.gap)
-            if speed_px is None:
-                continue
-            spd = speed_px / max(bh, 1)
-            gx = min(max(int(cx), 0), w - 1)
-            gy = min(max(int(cy), 0), h - 1)
-            speeds.append(spd)
-            if density[gy, gx] >= args.hot * args.sat:
-                hot_speeds.append(spd)
-            label = f"{spd:.1f}" if args.speed_unit == "bh" else f"{speed_px:.0f}"
-            cv2.putText(out, label, (x1, max(y1 - 5, int(14 * k))), FONT, 0.5 * k, (0, 255, 255), t)
+            spd = None
+            speed_px = None
+            if tid is not None:
+                speed_px = track_speed(history[tid], src_fps, args.gap)
+                if speed_px is not None:
+                    spd = speed_px / max(bh, 1)
+                    gx = min(max(int(cx), 0), w - 1)
+                    gy = min(max(int(cy), 0), h - 1)
+                    speeds.append(spd)
+                    if density[gy, gx] >= args.hot * args.sat:
+                        hot_speeds.append(spd)
+            
+            # Distinct label showing Person Order Index (e.g. #1, #2), Tracking ID, and Speed
+            if tid is not None and spd is not None:
+                spd_str = f"{spd:.1f}bh" if args.speed_unit == "bh" else f"{speed_px:.0f}px"
+                label = f"#{i+1} ID:{tid} ({spd_str})"
+            elif tid is not None:
+                label = f"#{i+1} ID:{tid}"
+            else:
+                label = f"#{i+1}"
+            cv2.putText(out, label, (x1, max(y1 - 5, int(14 * k))), FONT, 0.45 * k, (0, 255, 255), t)
 
         med = statistics.median(speeds) if len(speeds) >= 3 else None
         if med is not None:  # [PHASE2]
@@ -350,6 +380,14 @@ def main():
         draw_alerts(out, active, k, (frame_no // blink_period) % 2 == 0)
         draw_capacity_breach(out, len(people), args.capacity, k)
 
+        # [PHASE2] Record timeline point for live dashboard synchronization
+        timeline.append({
+            "t": round(frame_no / src_fps, 2),
+            "c": int(len(people)),
+            "peak": round(peak_s, 2),
+            "spd": round(med, 2) if med is not None else None,
+        })
+
         # [PHASE2] Periodic progress update to file
         if args.progress_file and (frame_no % 10 == 0 or frame_no == 1):
             try:
@@ -399,6 +437,7 @@ def main():
             "median_speed": overall_med_speed,
             "risk_level": str(highest_risk_name),
             "total_ids": int(len(seen_ids)),
+            "timeline": timeline,
         }
         with open(args.summary, "w") as sf:
             json.dump(summary_data, sf, indent=2)
