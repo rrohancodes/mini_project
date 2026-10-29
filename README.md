@@ -108,38 +108,23 @@ CREATE TABLE IF NOT EXISTS alert_events (
 ```
 
 ### 3.3 Entity-Relationship (ER) Diagram
+<div align="center">
 
-```mermaid
-erDiagram
-    JOBS ||--o{ ALERT_EVENTS : "triggers (1-to-N)"
+<table>
+  <tr>
+    <td align="center" style="border: 2px solid black; padding: 10px;">
+      <img
+        width="800"
+        alt="ER Diagram"
+        src="https://github.com/user-attachments/assets/fb9fb0ec-8458-41e2-b9a7-808c9c21a9fd"
+      />
+      <br/>
+      <strong>ER Diagram</strong>
+    </td>
+  </tr>
+</table>
 
-    JOBS {
-        TEXT id PK "Unique 12-char hex job identifier"
-        TEXT filename "Original uploaded video filename"
-        TEXT sha256 "SHA-256 cryptographic hash of video file"
-        TEXT status "Job lifecycle status: queued, running, done, error"
-        TEXT created_at "ISO-8601 creation timestamp"
-        TEXT finished_at "ISO-8601 completion timestamp"
-        INTEGER max_people "Maximum concurrent persons detected in any single frame"
-        REAL peak_density "Maximum Gaussian spatial density score recorded"
-        REAL median_speed "Overall median crowd flow velocity in body-heights/sec (bh/s)"
-        TEXT risk_level "Overall crowd risk classification: LOW, MEDIUM, HIGH, CRITICAL"
-        TEXT model "YOLO model weights identifier (e.g., yolov8m.pt)"
-        TEXT device "Hardware compute accelerator (e.g., CUDA:0 Tesla T4 or CPU)"
-        INTEGER mock "Boolean flag: 0 for real neural inference, 1 for mock simulation"
-    }
-
-    ALERT_EVENTS {
-        INTEGER id PK "Autoincrementing primary key"
-        TEXT job_id FK "References jobs(id)"
-        REAL time_s "Video timestamp in seconds when state change occurred"
-        TEXT alert "Alert category: HIGH DENSITY, CROWD STALLED, RUNNING, OVER CAPACITY"
-        TEXT state "State transition indicator: START or END"
-        REAL peak_density "Localized peak density index at event timestamp"
-        INTEGER hotspot_people "Number of individuals in high-density hotspot region"
-        REAL median_speed_bh "Median velocity of crowd in body-heights/sec (bh/s)"
-    }
-```
+</div>
 
 ### 3.4 Column Field Breakdown
 
